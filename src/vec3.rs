@@ -1,4 +1,4 @@
-use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub};
+use std::ops::{Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg, Sub};
 
 #[derive(Debug, Copy, Clone)]
 pub struct Vec3 {
@@ -133,5 +133,29 @@ impl MulAssign<f32> for Vec3 {
 impl DivAssign<f32> for Vec3 {
     fn div_assign(&mut self, rhs: f32) {
         *self *= 1.0 / rhs;
+    }
+}
+
+impl Index<usize> for Vec3 {
+    type Output = f32;
+
+    fn index(&self, i: usize) -> &f32 {
+        match i {
+            0 => &self.x,
+            1 => &self.y,
+            2 => &self.z,
+            _ => panic!("Out of vector bounds !"),
+        }
+    }
+}
+
+impl IndexMut<usize> for Vec3 {
+    fn index_mut(&mut self, i: usize) -> &mut f32 {
+        match i {
+            0 => &mut self.x,
+            1 => &mut self.y,
+            2 => &mut self.z,
+            _ => panic!("Out of vector bounds !"),
+        }
     }
 }
