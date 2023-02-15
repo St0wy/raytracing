@@ -23,7 +23,7 @@ impl Vec3 {
         self.squared_magnitude().sqrt()
     }
 
-    pub fn dot(self, other: Self) -> f32 {
+    pub fn dot(&self, other: &Self) -> f32 {
         self.x * other.x + self.y * other.y + self.z * other.z
     }
 
@@ -37,6 +37,10 @@ impl Vec3 {
 
     pub fn to_unit(self) -> Self {
         self / self.magnitude()
+    }
+
+    pub fn zero() -> Self {
+        Vec3::new(0.0, 0.0, 0.0)
     }
 }
 
