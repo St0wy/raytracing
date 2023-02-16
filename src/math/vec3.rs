@@ -86,13 +86,32 @@ impl Vec3 {
         Self::random_in_unit_sphere().to_unit()
     }
 
+    pub fn random_in_unit_disk() -> Self {
+        let mut rng = rand::thread_rng();
+        let between = Uniform::from(-1.0..1.0);
+        loop {
+            let point = Vec3::new(between.sample(&mut rng), between.sample(&mut rng), 0.0);
+            if point.squared_magnitude() < 1.0 {
+                return point;
+            }
+        }
+    }
+
     pub fn is_near_zero(&self) -> bool {
         const S: f32 = 1e-8;
         self.x.abs() < S && self.y.abs() < S && self.z.abs() < S
     }
 
-    pub fn reflect(&mut self, normal: &Vec3) -> Vec3 {
+    pub fn reflect(&self, normal: &Vec3) -> Vec3 {
         *self - (2.0 * self.dot(normal) * *normal)
+    }
+
+    pub fn refract(&self, normal: &Vec3, etai_over_etat: f32) -> Vec3 {
+        let cos_theta = (-*self).dot(normal).min(1.0);
+        let r_out_perp = etai_over_etat * (*self + cos_theta * *normal);
+        let r_out_parallel = -(1.0 - r_out_perp.squared_magnitude()).abs().sqrt() * *normal;
+
+        r_out_perp + r_out_parallel
     }
 }
 

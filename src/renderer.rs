@@ -34,7 +34,7 @@ pub fn render(
     let mut pixels = Vec::new();
     pixels.reserve(image_width * image_height);
     for j in (0..image_height).rev() {
-        for i in (0..image_width).rev() {
+        for i in 0..image_width {
             let mut pixel_color = Color::zero();
             for _ in 0..SAMPLES_PER_PIXEL {
                 let u = (i as f32 + rng.gen::<f32>()) / (image_width as f32 - 1.0);

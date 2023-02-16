@@ -11,6 +11,7 @@ use geometry::hit::Hittable;
 use indicatif::HumanDuration;
 use math::vec3::*;
 use ray::Ray;
+use std::f32::consts::PI;
 use std::io::BufWriter;
 use std::path::Path;
 use std::{fs::File, time::Instant};
@@ -18,7 +19,7 @@ use std::{fs::File, time::Instant};
 use crate::camera::Camera;
 use crate::geometry::hit::HittableList;
 use crate::geometry::sphere::Sphere;
-use crate::material::{Lambertian, Metal};
+use crate::material::{Dielectric, Lambertian, Metal};
 use crate::renderer::render;
 
 fn ray_color(ray: &Ray, world: &mut HittableList, depth: u32) -> Color {
@@ -49,12 +50,13 @@ fn main() {
     encoder.set_depth(png::BitDepth::Eight);
 
     // Setup object world
+    let R: f32 = f32::cos(PI / 4.0);
     let mut world = HittableList::new();
 
     let material_ground = Lambertian::new(Color::new(0.8, 0.8, 0.0));
-    let material_center = Lambertian::new(Color::new(0.7, 0.3, 0.3));
-    let material_left = Metal::new(Color::new(0.8, 0.8, 0.8));
-    let material_right = Metal::new(Color::new(0.8, 0.6, 0.2));
+    let material_center = Lambertian::new(Color::new(0.1, 0.2, 0.5));
+    let material_left = Dielectric::new(1.5);
+    let material_right = Metal::new(Color::new(0.8, 0.6, 0.2), 0.0);
 
     world.add(Sphere::new(
         Point3::new(0.0, -100.5, -1.0),
@@ -69,6 +71,11 @@ fn main() {
     world.add(Sphere::new(
         Point3::new(-1.0, 0.0, -1.0),
         0.5,
+        Box::new(material_left.clone()),
+    ));
+    world.add(Sphere::new(
+        Point3::new(-1.0, 0.0, -1.0),
+        -0.45,
         Box::new(material_left),
     ));
     world.add(Sphere::new(
@@ -77,7 +84,20 @@ fn main() {
         Box::new(material_right),
     ));
 
-    let camera = Camera::new();
+    let look_from = Point3::new(3.0, 3.0, 2.0);
+    let look_at = Point3::new(0.0, 0.0, -1.0);
+    let vup = Vec3::new(0.0, 1.0, 0.0);
+    let distance_to_focus = (look_from - look_at).magnitude();
+    let aperture = 2.0;
+    let camera = Camera::new(
+        look_from,
+        look_at,
+        vup,
+        20.0,
+        ASPECT_RATIO,
+        aperture,
+        distance_to_focus,
+    );
 
     let start = Instant::now();
 

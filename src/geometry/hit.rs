@@ -40,6 +40,10 @@ impl<'a> HitRecord<'a> {
     pub fn material(&self) -> &Box<dyn Material> {
         self.material
     }
+
+    pub fn front_face(&self) -> bool {
+        self.front_face
+    }
 }
 
 pub trait Hittable {
