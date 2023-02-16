@@ -1,5 +1,5 @@
 use crate::math::utils::degress_to_radians;
-use crate::{consts::FOCAL_LENGTH, math::vec3::*, ray::Ray};
+use crate::{math::vec3::*, ray::Ray};
 
 pub struct Camera {
     origin: Point3,
@@ -8,7 +8,7 @@ pub struct Camera {
     vertical: Vec3,
     u: Vec3,
     v: Vec3,
-    w: Vec3,
+    // w: Vec3,
     lens_radius: f32,
 }
 
@@ -39,7 +39,7 @@ impl Camera {
             horizontal,
             vertical,
             lower_left_corner: origin - horizontal / 2.0 - vertical / 2.0 - focus_distance * w,
-            w,
+            // w,
             u,
             v,
             lens_radius: aperture / 2.0,

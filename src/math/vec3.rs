@@ -48,6 +48,7 @@ impl Vec3 {
     pub fn zero() -> Self {
         Vec3::new(0.0, 0.0, 0.0)
     }
+    
     pub fn random() -> Self {
         let mut rng = rand::thread_rng();
         Self::new(rng.gen(), rng.gen(), rng.gen())

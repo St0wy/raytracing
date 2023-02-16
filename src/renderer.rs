@@ -15,7 +15,7 @@ fn write_color(pixels: &mut Vec<u8>, color: Vec3) {
     }
 }
 
-pub fn render(
+pub fn render_single_core(
     world: &mut HittableList,
     camera: &Camera,
     image_width: usize,
@@ -57,23 +57,3 @@ pub fn render(
 
     return pixels;
 }
-
-// let pixels: Vec<u8> = (0..image_height)
-//     .into_iter()
-//     .rev()
-//     .flat_map(|j| {
-//         (0..image_width).into_iter().flat_map(move |i| {
-//             let u = i as f32 / (image_width as f32 - 1.0);
-//             let v = j as f32 / (image_height as f32 - 1.0);
-//             let ray = Ray::new(
-//                 origin,
-//                 lower_left_corner + u * horizontal + v * vertical - origin,
-//             );
-
-//             let color = ray_color(&ray);
-//             (0..3)
-//                 .into_iter()
-//                 .map(move |k| (255.99 * color[k as usize]).min(255.0) as u8)
-//         })
-//     })
-//     .collect();
