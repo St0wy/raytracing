@@ -1,3 +1,4 @@
+use crate::material::Material;
 use crate::{math::vec3::*, ray::Ray};
 
 use super::hit::{HitRecord, Hittable};
@@ -5,6 +6,7 @@ use super::hit::{HitRecord, Hittable};
 pub struct Sphere {
     center: Point3,
     radius: f32,
+    material: Box<dyn Material>,
 }
 
 impl Hittable for Sphere {
@@ -31,7 +33,7 @@ impl Hittable for Sphere {
 
         let point = ray.at(root);
         let outward_normal = (point - self.center) / self.radius;
-        let mut record = HitRecord::new(point, root);
+        let mut record = HitRecord::new(point, root, &self.material);
         record.set_face_normal(ray, &outward_normal);
 
         Some(record)
@@ -39,7 +41,11 @@ impl Hittable for Sphere {
 }
 
 impl Sphere {
-    pub fn new(center: Point3, radius: f32) -> Self {
-        Self { center, radius }
+    pub fn new(center: Point3, radius: f32, material: Box<dyn Material>) -> Self {
+        Self {
+            center,
+            radius,
+            material,
+        }
     }
 }

@@ -1,19 +1,22 @@
+use crate::material::Material;
 use crate::{math::vec3::*, ray::Ray};
 
-pub struct HitRecord {
+pub struct HitRecord<'a> {
     point: Point3,
     normal: Vec3,
     t: f32,
     front_face: bool,
+    material: &'a Box<dyn Material>,
 }
 
-impl HitRecord {
-    pub fn new(point: Point3, t: f32) -> Self {
+impl<'a> HitRecord<'a> {
+    pub fn new(point: Point3, t: f32, material: &'a Box<dyn Material>) -> Self {
         Self {
             point,
             normal: Vec3::zero(),
             t,
             front_face: false,
+            material,
         }
     }
 
@@ -28,6 +31,14 @@ impl HitRecord {
 
     pub fn normal(&self) -> &Vec3 {
         &self.normal
+    }
+
+    pub fn point(&self) -> &Point3 {
+        &self.point
+    }
+
+    pub fn material(&self) -> &Box<dyn Material> {
+        self.material
     }
 }
 

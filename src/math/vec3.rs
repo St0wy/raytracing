@@ -1,6 +1,12 @@
-use std::ops::{Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg, Sub};
+use rand::distributions::Distribution;
+use rand::distributions::Uniform;
+use rand::Rng;
+use std::ops::{
+    Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg, Range, RangeInclusive,
+    Sub,
+};
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, Default)]
 pub struct Vec3 {
     pub x: f32,
     pub y: f32,
@@ -41,6 +47,52 @@ impl Vec3 {
 
     pub fn zero() -> Self {
         Vec3::new(0.0, 0.0, 0.0)
+    }
+    pub fn random() -> Self {
+        let mut rng = rand::thread_rng();
+        Self::new(rng.gen(), rng.gen(), rng.gen())
+    }
+
+    pub fn random_range(range: Range<f32>) -> Self {
+        let mut rng = rand::thread_rng();
+        let between = Uniform::from(range);
+        Self::new(
+            between.sample(&mut rng),
+            between.sample(&mut rng),
+            between.sample(&mut rng),
+        )
+    }
+
+    pub fn random_range_inclusive(range: RangeInclusive<f32>) -> Self {
+        let mut rng = rand::thread_rng();
+        let between = Uniform::from(range);
+        Self::new(
+            between.sample(&mut rng),
+            between.sample(&mut rng),
+            between.sample(&mut rng),
+        )
+    }
+
+    pub fn random_in_unit_sphere() -> Self {
+        loop {
+            let point = Self::random_range(-1.0..1.0);
+            if point.squared_magnitude() < 1.0 {
+                return point;
+            }
+        }
+    }
+
+    pub fn random_unit_normalized() -> Self {
+        Self::random_in_unit_sphere().to_unit()
+    }
+
+    pub fn is_near_zero(&self) -> bool {
+        const S: f32 = 1e-8;
+        self.x.abs() < S && self.y.abs() < S && self.z.abs() < S
+    }
+
+    pub fn reflect(&mut self, normal: &Vec3) -> Vec3 {
+        *self - (2.0 * self.dot(normal) * *normal)
     }
 }
 
