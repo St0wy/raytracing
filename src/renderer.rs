@@ -2,10 +2,28 @@ use indicatif::{ProgressBar, ProgressStyle};
 use rand::Rng;
 
 use crate::consts::MAX_DEPTH;
+use crate::ray::Ray;
 use crate::{
     camera::Camera, consts::SAMPLES_PER_PIXEL, geometry::hit::HittableList, math::vec3::*,
-    ray_color,
 };
+
+fn ray_color(ray: &Ray, world: &mut HittableList, depth: u32) -> Color {
+    if depth == 0 {
+        return Color::zero();
+    }
+
+    if let Some(record) = world.hit(ray, 0.001, f32::INFINITY) {
+        return if let Some(result) = record.material().scatter(ray, &record) {
+            result.attenuation * ray_color(&result.scattered, world, depth - 1)
+        } else {
+            Color::zero()
+        };
+    }
+
+    let unit_direction = ray.direction().to_unit();
+    let t = 0.5 * (unit_direction.y + 1.0);
+    (1.0 - t) * Color::new(1.0, 1.0, 1.0) + t * Color::new(0.5, 0.7, 1.0)
+}
 
 fn write_color(pixels: &mut Vec<u8>, color: Vec3) {
     let scale = 1.0 / SAMPLES_PER_PIXEL as f32;

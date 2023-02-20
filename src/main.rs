@@ -7,11 +7,9 @@ pub mod ray;
 pub mod renderer;
 
 use consts::*;
-use geometry::hit::Hittable;
 use indicatif::HumanDuration;
 use math::vec3::*;
 use rand::Rng;
-use ray::Ray;
 use std::io::BufWriter;
 use std::path::Path;
 use std::{fs::File, time::Instant};
@@ -19,28 +17,8 @@ use std::{fs::File, time::Instant};
 use crate::camera::Camera;
 use crate::geometry::hit::HittableList;
 use crate::geometry::sphere::Sphere;
-use crate::material::Lambertian;
-use crate::material::Dielectric;
-use crate::material::Metal;
+use crate::material::Material;
 use crate::renderer::render_single_core;
-
-fn ray_color(ray: &Ray, world: &mut HittableList, depth: u32) -> Color {
-    if depth == 0 {
-        return Color::zero();
-    }
-
-    if let Some(record) = world.hit(ray, 0.001, f32::INFINITY) {
-        return if let Some(result) = record.material().scatter(ray, &record) {
-            result.attenuation * ray_color(&result.scattered, world, depth - 1)
-        } else {
-            Color::zero()
-        };
-    }
-
-    let unit_direction = ray.direction().to_unit();
-    let t = 0.5 * (unit_direction.y + 1.0);
-    (1.0 - t) * Color::new(1.0, 1.0, 1.0) + t * Color::new(0.5, 0.7, 1.0)
-}
 
 fn main() {
     // Setup image encoder
@@ -84,11 +62,11 @@ fn main() {
 fn random_scene() -> HittableList {
     let mut world = HittableList::new();
 
-    let material_ground = Lambertian::new(Color::new(0.5, 0.5, 0.5));
+    let material_ground = Material::new_lambertian(Color::new(0.5, 0.5, 0.5));
     world.add(Sphere::new(
         Point3::new(0.0, -1000.0, -1.0),
         1000.0,
-        Box::new(material_ground),
+        material_ground,
     ));
 
     let mut rng = rand::thread_rng();
@@ -105,39 +83,27 @@ fn random_scene() -> HittableList {
             if (center - Point3::new(4.0, 0.2, 0.0)).magnitude() > 0.9 {
                 if choose_mat < 0.8 {
                     let albedo = Color::random() * Color::random();
-                    let sphere_material = Lambertian::new(albedo);
-                    world.add(Sphere::new(center, 0.2, Box::new(sphere_material)));
+                    let sphere_material = Material::new_lambertian(albedo);
+                    world.add(Sphere::new(center, 0.2, sphere_material));
                 } else if choose_mat < 0.95 {
                     let albedo = Color::random_range(0.5..1.0);
                     let fuzz = rng.gen_range(0.0..0.5);
-                    let sphere_material = Metal::new(albedo, fuzz);
-                    world.add(Sphere::new(center, 0.2, Box::new(sphere_material)));
+                    let sphere_material = Material::new_metal(albedo, fuzz);
+                    world.add(Sphere::new(center, 0.2, sphere_material));
                 } else {
-                    let sphere_material = Dielectric::new(1.5);
-                    world.add(Sphere::new(center, 0.2, Box::new(sphere_material)));
+                    let sphere_material = Material::new_dielectric(1.5);
+                    world.add(Sphere::new(center, 0.2, sphere_material));
                 }
             }
         }
     }
 
-    let material = Dielectric::new(1.5);
-    world.add(Sphere::new(
-        Point3::new(0.0, 1.0, 0.0),
-        1.0,
-        Box::new(material),
-    ));
-    let material = Lambertian::new(Color::new(0.4, 0.2, 0.1));
-    world.add(Sphere::new(
-        Point3::new(-4.0, 1.0, 0.0),
-        1.0,
-        Box::new(material),
-    ));
-    let material = Metal::new(Color::new(0.7, 0.6, 0.5), 0.0);
-    world.add(Sphere::new(
-        Point3::new(4.0, 1.0, 0.0),
-        1.0,
-        Box::new(material),
-    ));
+    let material = Material::new_dielectric(1.5);
+    world.add(Sphere::new(Point3::new(0.0, 1.0, 0.0), 1.0, material));
+    let material = Material::new_lambertian(Color::new(0.4, 0.2, 0.1));
+    world.add(Sphere::new(Point3::new(-4.0, 1.0, 0.0), 1.0, material));
+    let material = Material::new_metal(Color::new(0.7, 0.6, 0.5), 0.0);
+    world.add(Sphere::new(Point3::new(4.0, 1.0, 0.0), 1.0, material));
 
     world
 }

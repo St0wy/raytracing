@@ -1,3 +1,4 @@
+use crate::geometry::sphere::Sphere;
 use crate::material::Material;
 use crate::{math::vec3::*, ray::Ray};
 
@@ -6,11 +7,11 @@ pub struct HitRecord<'a> {
     normal: Vec3,
     t: f32,
     front_face: bool,
-    material: &'a Box<dyn Material>,
+    material: &'a Material,
 }
 
 impl<'a> HitRecord<'a> {
-    pub fn new(point: Point3, t: f32, material: &'a Box<dyn Material>) -> Self {
+    pub fn new(point: Point3, t: f32, material: &'a Material) -> Self {
         Self {
             point,
             normal: Vec3::zero(),
@@ -37,7 +38,7 @@ impl<'a> HitRecord<'a> {
         &self.point
     }
 
-    pub fn material(&self) -> &Box<dyn Material> {
+    pub fn material(&self) -> &Material {
         self.material
     }
 
@@ -51,11 +52,25 @@ pub trait Hittable {
 }
 
 pub struct HittableList {
-    objects: Vec<Box<dyn Hittable>>,
+    objects: Vec<Sphere>,
 }
 
-impl Hittable for HittableList {
-    fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
+impl HittableList {
+    pub fn new() -> Self {
+        Self {
+            objects: Vec::new(),
+        }
+    }
+
+    pub fn add(&mut self, object: Sphere) {
+        self.objects.push(object);
+    }
+
+    pub fn clear(&mut self) {
+        self.objects.clear();
+    }
+
+    pub fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
         let mut record_option: Option<HitRecord> = None;
         let mut closest_distance = t_max;
 
@@ -69,21 +84,5 @@ impl Hittable for HittableList {
         }
 
         record_option
-    }
-}
-
-impl HittableList {
-    pub fn new() -> Self {
-        Self {
-            objects: Vec::new(),
-        }
-    }
-
-    pub fn add(&mut self, object: impl Hittable + 'static) {
-        self.objects.push(Box::new(object));
-    }
-
-    pub fn clear(&mut self) {
-        self.objects.clear();
     }
 }
