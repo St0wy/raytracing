@@ -17,7 +17,9 @@
   <component name="ChangeListManager">
     <list default="true" id="5d57bb42-7a3c-4d47-af3f-38b6573f1724" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benches/my_benchmark.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/my_benchmark.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/geometry/hit.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/hit.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/geometry/sphere.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/sphere.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -206,7 +208,7 @@
       <workItem from="1677676920609" duration="11000" />
       <workItem from="1677676942273" duration="3609000" />
       <workItem from="1677680619901" duration="4403000" />
-      <workItem from="1677693432163" duration="4589000" />
+      <workItem from="1677693432163" duration="7246000" />
     </task>
     <servers />
   </component>
@@ -215,17 +217,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/geometry/sphere.rs</url>
-          <line>35</line>
-          <option name="timeStamp" value="2" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

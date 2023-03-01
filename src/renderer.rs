@@ -12,7 +12,7 @@ fn ray_color(ray: &Ray, world: &HittableList, depth: u32) -> Color {
         return Color::zero();
     }
 
-    if let Some(record) = world.hit(ray, 0.001, f32::INFINITY) {
+    if let Some(record) = world.hit(ray) {
         return if let Some(result) = record.material().scatter(ray, &record) {
             result.attenuation * ray_color(&result.scattered, world, depth - 1)
         } else {

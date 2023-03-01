@@ -317,6 +317,10 @@ impl Vec3 {
     pub const fn up() -> Self {
         Self::new(0.0, 1.0, 0.0)
     }
+
+    pub const fn forward() -> Self {
+        Self::new(0.0, 0.0, 1.0)
+    }
 }
 
 impl Add for Vec3 {

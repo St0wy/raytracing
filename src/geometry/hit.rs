@@ -75,7 +75,11 @@ impl HittableList {
         self.objects.clear();
     }
 
-    pub fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
+    pub fn hit(&self, ray: &Ray) -> Option<HitRecord> {
+        self.hit_limit(ray, 0.001, f32::INFINITY)
+    }
+
+    pub fn hit_limit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
         let mut record_option: Option<HitRecord> = None;
         let mut closest_distance = t_max;
 
@@ -94,10 +98,25 @@ impl HittableList {
 
 #[cfg(test)]
 mod tests {
-    use crate::geometry::hit::HitRecord;
+    use crate::geometry::hit::HittableList;
+    use crate::geometry::sphere::Sphere;
+    use crate::material::Material;
+    use crate::math::vec3::{Point3, Vec3};
+    use crate::ray::Ray;
 
     #[test]
-    fn new_hit_record_front_face() {
-        // let hit_record = HitRecord::new();
+    fn hittable_list_hit_with_one_object() {
+        let mut hittable_list = HittableList::new();
+        let sphere = Sphere::new(
+            Point3::new(0.0, 0.0, 10.0),
+            3.0,
+            Material::new_dielectric(0.0),
+        );
+        hittable_list.add(sphere);
+
+        let ray = Ray::new(Point3::zero(), Vec3::forward());
+        let result = hittable_list.hit(&ray);
+
+        assert!(result.is_some());
     }
 }
