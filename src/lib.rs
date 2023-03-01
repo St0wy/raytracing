@@ -32,20 +32,7 @@ pub fn run() {
     // Setup object world
     let mut world = random_scene();
 
-    let look_from = Point3::new(13.0, 2.0, 3.0);
-    let look_at = Point3::new(0.0, 0.0, 0.0);
-    let vup = Vec3::new(0.0, 1.0, 0.0);
-    let distance_to_focus = 10.0;
-    let aperture = 0.1;
-    let camera = Camera::new(
-        look_from,
-        look_at,
-        vup,
-        20.0,
-        ASPECT_RATIO,
-        aperture,
-        distance_to_focus,
-    );
+    let camera = Camera::default();
 
     let start = Instant::now();
 

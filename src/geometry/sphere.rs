@@ -33,8 +33,13 @@ impl Hittable for Sphere {
 
         let point = ray.at(root);
         let outward_normal = (point - self.center) / self.radius;
-        let mut record = HitRecord::new(point, root, &self.material);
-        record.set_face_normal(ray, &outward_normal);
+        let record = HitRecord::new(
+            point,
+            root,
+            outward_normal,
+            &ray.direction(),
+            &self.material,
+        );
 
         Some(record)
     }

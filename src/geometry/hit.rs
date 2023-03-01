@@ -2,6 +2,7 @@ use crate::geometry::sphere::Sphere;
 use crate::material::Material;
 use crate::{math::vec3::*, ray::Ray};
 
+#[derive(Debug)]
 pub struct HitRecord<'a> {
     point: Point3,
     normal: Vec3,
@@ -11,23 +12,27 @@ pub struct HitRecord<'a> {
 }
 
 impl<'a> HitRecord<'a> {
-    pub fn new(point: Point3, t: f32, material: &'a Material) -> Self {
+    pub fn new(
+        point: Point3,
+        t: f32,
+        outward_normal: Vec3,
+        ray_direction: &Vec3,
+        material: &'a Material,
+    ) -> Self {
+        let front_face = ray_direction.dot(&outward_normal) < 0.0;
+        let normal = if front_face {
+            outward_normal
+        } else {
+            -outward_normal
+        };
+
         Self {
             point,
-            normal: Vec3::zero(),
+            normal,
             t,
-            front_face: false,
+            front_face,
             material,
         }
-    }
-
-    pub fn set_face_normal(&mut self, ray: &Ray, outward_normal: &Vec3) {
-        self.front_face = ray.direction().dot(outward_normal) < 0.0;
-        self.normal = if self.front_face {
-            *outward_normal
-        } else {
-            -*outward_normal
-        };
     }
 
     pub fn normal(&self) -> &Vec3 {
@@ -84,5 +89,15 @@ impl HittableList {
         }
 
         record_option
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::geometry::hit::HitRecord;
+
+    #[test]
+    fn new_hit_record_front_face() {
+        // let hit_record = HitRecord::new();
     }
 }

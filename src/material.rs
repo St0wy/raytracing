@@ -18,6 +18,7 @@ impl ScatterResult {
     }
 }
 
+#[derive(Debug)]
 pub enum Material {
     Lambertian { albedo: Color },
     Metal { albedo: Vec3, fuzz: f32 },

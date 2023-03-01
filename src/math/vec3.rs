@@ -6,7 +6,7 @@ use std::ops::{
     Sub,
 };
 
-#[derive(Debug, Copy, Clone, Default)]
+#[derive(Debug, Copy, Clone, Default, PartialEq)]
 pub struct Vec3 {
     pub x: f32,
     pub y: f32,
@@ -124,20 +124,6 @@ impl Vec3 {
     /// ```
     pub fn to_unit(self) -> Self {
         self / self.magnitude()
-    }
-
-    /// Creates a vector where x, y and z are 0.
-    ///
-    /// # Example
-    /// ```
-    /// use raytracing::math::vec3::Vec3;
-    /// let zero = Vec3::zero();
-    /// assert_eq!(zero.x, 0.0);
-    /// assert_eq!(zero.y, 0.0);
-    /// assert_eq!(zero.z, 0.0);
-    /// ```
-    pub const fn zero() -> Self {
-        Vec3::new(0.0, 0.0, 0.0)
     }
 
     /// Gets a random vector where x, y and z are in the range 0..1.
@@ -312,6 +298,24 @@ impl Vec3 {
         let r_out_parallel = -(1.0 - r_out_perp.squared_magnitude()).abs().sqrt() * *normal;
 
         r_out_perp + r_out_parallel
+    }
+
+    /// Creates a vector where x, y and z are 0.
+    ///
+    /// # Example
+    /// ```
+    /// use raytracing::math::vec3::Vec3;
+    /// let zero = Vec3::zero();
+    /// assert_eq!(zero.x, 0.0);
+    /// assert_eq!(zero.y, 0.0);
+    /// assert_eq!(zero.z, 0.0);
+    /// ```
+    pub const fn zero() -> Self {
+        Self::new(0.0, 0.0, 0.0)
+    }
+
+    pub const fn up() -> Self {
+        Self::new(0.0, 1.0, 0.0)
     }
 }
 
