@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+#float-cmp = "0.9.0"
 indicatif = "0.17.3"
 png = "0.17.7"
 rand = "0.8.5"
