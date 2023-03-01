@@ -9,9 +9,6 @@ use raytracing::renderer::render_single_core_no_bar;
 use std::time::Duration;
 
 fn criterion_benchmark(c: &mut Criterion) {
-    let mut group = c.benchmark_group("Render");
-    group.measurement_time(Duration::from_secs_f64(120.0));
-
     let mut world = HittableList::new();
 
     let material = Material::new_dielectric(1.5);
@@ -36,14 +33,16 @@ fn criterion_benchmark(c: &mut Criterion) {
         distance_to_focus,
     );
 
-    group.bench_function("render", |b| {
+    c.bench_function("render", |b| {
         b.iter(|| {
             render_single_core_no_bar(&world, &camera, IMAGE_WIDTH, IMAGE_HEIGHT);
         })
     });
-
-    group.finish();
 }
 
-criterion_group!(benches, criterion_benchmark);
+criterion_group! {
+    name = benches;
+    config = Criterion::default().measurement_time(Duration::from_secs_f64(130.0));
+    targets = criterion_benchmark
+}
 criterion_main!(benches);
