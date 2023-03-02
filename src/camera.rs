@@ -3,8 +3,8 @@ use crate::math::utils::degrees_to_radians;
 use crate::{math::vec3::*, ray::Ray};
 
 pub struct Camera {
-    origin: Point3,
-    lower_left_corner: Point3,
+    origin: Vec3,
+    lower_left_corner: Vec3,
     horizontal: Vec3,
     vertical: Vec3,
     u: Vec3,
@@ -14,8 +14,8 @@ pub struct Camera {
 
 impl Camera {
     pub fn new(
-        look_from: Point3,
-        look_at: Point3,
+        look_from: Vec3,
+        look_at: Vec3,
         vup: Vec3,
         vertical_fov: f32,
         aspect_ratio: f32,
@@ -59,9 +59,9 @@ impl Camera {
 impl Default for Camera {
     fn default() -> Self {
         Self::new(
-            Point3::new(13.0, 2.0, 3.0),
-            Point3::zero(),
-            Point3::up(),
+            Vec3::new(13.0, 2.0, 3.0),
+            Vec3::zero(),
+            Vec3::up(),
             20.0,
             ASPECT_RATIO,
             0.1,

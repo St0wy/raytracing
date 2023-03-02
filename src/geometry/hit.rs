@@ -4,7 +4,7 @@ use crate::{math::vec3::*, ray::Ray};
 
 #[derive(Debug)]
 pub struct HitRecord<'a> {
-    point: Point3,
+    point: Vec3,
     normal: Vec3,
     t: f32,
     front_face: bool,
@@ -13,7 +13,7 @@ pub struct HitRecord<'a> {
 
 impl<'a> HitRecord<'a> {
     pub fn new(
-        point: Point3,
+        point: Vec3,
         t: f32,
         outward_normal: Vec3,
         ray_direction: &Vec3,
@@ -39,7 +39,7 @@ impl<'a> HitRecord<'a> {
         &self.normal
     }
 
-    pub fn point(&self) -> &Point3 {
+    pub fn point(&self) -> &Vec3 {
         &self.point
     }
 
@@ -101,20 +101,20 @@ mod tests {
     use crate::geometry::hit::HittableList;
     use crate::geometry::sphere::Sphere;
     use crate::material::Material;
-    use crate::math::vec3::{Point3, Vec3};
+    use crate::math::vec3::Vec3;
     use crate::ray::Ray;
 
     #[test]
     fn hittable_list_hit_with_one_object() {
         let mut hittable_list = HittableList::new();
         let sphere = Sphere::new(
-            Point3::new(0.0, 0.0, 10.0),
+            Vec3::new(0.0, 0.0, 10.0),
             3.0,
             Material::new_dielectric(0.0),
         );
         hittable_list.add(sphere);
 
-        let ray = Ray::new(Point3::zero(), Vec3::forward());
+        let ray = Ray::new(Vec3::zero(), Vec3::forward());
         let result = hittable_list.hit(&ray);
 
         assert!(result.is_some());

@@ -13,9 +13,6 @@ pub struct Vec3 {
     pub z: f32,
 }
 
-pub type Point3 = Vec3;
-pub type Color = Vec3;
-
 impl Vec3 {
     /// Creates a new [Vec3]
     ///

@@ -4,7 +4,7 @@ use crate::{math::vec3::*, ray::Ray};
 use super::hit::{HitRecord, Hittable};
 
 pub struct Sphere {
-    center: Point3,
+    center: Vec3,
     radius: f32,
     material: Material,
 }
@@ -46,7 +46,7 @@ impl Hittable for Sphere {
 }
 
 impl Sphere {
-    pub fn new(center: Point3, radius: f32, material: Material) -> Self {
+    pub fn new(center: Vec3, radius: f32, material: Material) -> Self {
         Self {
             center,
             radius,

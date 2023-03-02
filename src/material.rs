@@ -1,5 +1,6 @@
 use crate::geometry::hit::HitRecord;
-use crate::math::vec3::{Color, Vec3};
+use crate::math::color::Color;
+use crate::math::vec3::Vec3;
 use crate::ray::Ray;
 use rand::Rng;
 
@@ -21,7 +22,7 @@ impl ScatterResult {
 #[derive(Debug)]
 pub enum Material {
     Lambertian { albedo: Color },
-    Metal { albedo: Vec3, fuzz: f32 },
+    Metal { albedo: Color, fuzz: f32 },
     Dielectric { refraction_index: f32 },
 }
 
@@ -41,9 +42,11 @@ impl Material {
 
     pub fn scatter(&self, ray_in: &Ray, record: &HitRecord) -> Option<ScatterResult> {
         match self {
-            Material::Lambertian { albedo } => { scatter_lambertian(*albedo, record) }
-            Material::Metal { albedo, fuzz } => { scatter_metal(*albedo, *fuzz, ray_in, record) }
-            Material::Dielectric { refraction_index } => { scatter_dielectrics(*refraction_index, ray_in, record) }
+            Material::Lambertian { albedo } => scatter_lambertian(*albedo, record),
+            Material::Metal { albedo, fuzz } => scatter_metal(*albedo, *fuzz, ray_in, record),
+            Material::Dielectric { refraction_index } => {
+                scatter_dielectrics(*refraction_index, ray_in, record)
+            }
         }
     }
 }
@@ -61,7 +64,7 @@ fn scatter_lambertian(albedo: Color, record: &HitRecord) -> Option<ScatterResult
 }
 
 fn scatter_metal(
-    albedo: Vec3,
+    albedo: Color,
     fuzz: f32,
     ray_in: &Ray,
     record: &HitRecord,
@@ -83,7 +86,7 @@ fn scatter_dielectrics(
     ray_in: &Ray,
     record: &HitRecord,
 ) -> Option<ScatterResult> {
-    let attenuation = Color::new(1.0, 1.0, 1.0);
+    let attenuation = Color::white();
     let refraction_ratio = if record.front_face() {
         1.0 / refraction_index
     } else {
