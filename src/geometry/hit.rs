@@ -1,3 +1,4 @@
+use crate::geometry::moving_sphere::MovingSphere;
 use crate::geometry::sphere::Sphere;
 use crate::material::Material;
 use crate::{math::vec3::*, ray::Ray};
@@ -57,33 +58,50 @@ pub trait Hittable {
 }
 
 pub struct HittableList {
-    objects: Vec<Sphere>,
+    spheres: Vec<Sphere>,
+    moving_spheres: Vec<MovingSphere>,
 }
 
 impl HittableList {
     pub fn new() -> Self {
         Self {
-            objects: Vec::new(),
+            spheres: Vec::new(),
+            moving_spheres: Vec::new(),
         }
     }
 
-    pub fn add(&mut self, object: Sphere) {
-        self.objects.push(object);
+    pub fn add_sphere(&mut self, sphere: Sphere) {
+        self.spheres.push(sphere);
+    }
+
+    pub fn add_moving_sphere(&mut self, moving_sphere: MovingSphere) {
+        self.moving_spheres.push(moving_sphere);
     }
 
     pub fn clear(&mut self) {
-        self.objects.clear();
+        self.spheres.clear();
     }
 
-    pub fn hit(&self, ray: &Ray) -> Option<HitRecord> {
-        self.hit_limit(ray, 0.001, f32::INFINITY)
+    pub fn hit_no_limit(&self, ray: &Ray) -> Option<HitRecord> {
+        self.hit(ray, 0.001, f32::INFINITY)
     }
+}
 
-    pub fn hit_limit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
+impl Hittable for HittableList {
+    fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
         let mut record_option: Option<HitRecord> = None;
         let mut closest_distance = t_max;
 
-        for object in self.objects.iter() {
+        for object in self.spheres.iter() {
+            let record = object.hit(ray, t_min, closest_distance);
+            if record.is_some() {
+                let record = record.unwrap();
+                closest_distance = record.t;
+                record_option = Some(record);
+            }
+        }
+
+        for object in self.moving_spheres.iter() {
             let record = object.hit(ray, t_min, closest_distance);
             if record.is_some() {
                 let record = record.unwrap();
@@ -112,10 +130,10 @@ mod tests {
             3.0,
             Material::new_dielectric(0.0),
         );
-        hittable_list.add(sphere);
+        hittable_list.add_sphere(sphere);
 
         let ray = Ray::new(Vec3::zero(), Vec3::forward());
-        let result = hittable_list.hit(&ray);
+        let result = hittable_list.hit_no_limit(&ray);
 
         assert!(result.is_some());
     }

@@ -4,6 +4,7 @@ use crate::math::vec3::*;
 pub struct Ray {
     origin: Vec3,
     direction: Vec3,
+    pub time: f32,
 }
 
 impl Ray {
@@ -26,7 +27,11 @@ impl Ray {
     /// assert_eq!(ray.direction(), Vec3::new(1.0, 0.0, 0.0));
     /// ```
     pub fn new(origin: Vec3, direction: Vec3) -> Self {
-        Self { origin, direction }
+        Self {
+            origin,
+            direction,
+            time: 0.0,
+        }
     }
 
     pub fn origin(&self) -> Vec3 {

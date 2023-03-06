@@ -40,11 +40,11 @@ pub fn run_same_as_bench() {
     let mut world = HittableList::new();
 
     let material = Material::new_dielectric(1.5);
-    world.add(Sphere::new(Vec3::new(4.0, 1.0, 0.0), 1.0, material));
+    world.add_sphere(Sphere::new(Vec3::new(4.0, 1.0, 0.0), 1.0, material));
     let material = Material::new_metal(Color::new(0.7, 0.6, 0.5), 0.0);
-    world.add(Sphere::new(Vec3::new(0.0, 1.0, 0.0), 1.0, material));
+    world.add_sphere(Sphere::new(Vec3::new(0.0, 1.0, 0.0), 1.0, material));
     let material = Material::new_lambertian(Color::new(0.4, 0.2, 0.1));
-    world.add(Sphere::new(Vec3::new(-4.0, 1.0, 0.0), 1.0, material));
+    world.add_sphere(Sphere::new(Vec3::new(-4.0, 1.0, 0.0), 1.0, material));
 
     let camera = Camera::default();
     let scene = Scene::new(world, camera);

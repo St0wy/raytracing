@@ -21,7 +21,7 @@ fn ray_color(ray: &Ray, hittable_list: &HittableList, depth: u32) -> Color {
         return Color::black();
     }
 
-    if let Some(record) = hittable_list.hit(ray) {
+    if let Some(record) = hittable_list.hit_no_limit(ray) {
         return if let Some(result) = record.material().scatter(ray, &record) {
             result.attenuation * ray_color(&result.scattered, hittable_list, depth - 1)
         } else {

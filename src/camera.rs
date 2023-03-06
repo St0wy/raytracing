@@ -1,6 +1,7 @@
 use crate::consts::ASPECT_RATIO;
 use crate::math::utils::degrees_to_radians;
 use crate::{math::vec3::*, ray::Ray};
+use rand::Rng;
 
 pub struct Camera {
     origin: Vec3,
@@ -10,6 +11,8 @@ pub struct Camera {
     u: Vec3,
     v: Vec3,
     lens_radius: f32,
+    time0: f32,
+    time1: f32,
 }
 
 impl Camera {
@@ -42,6 +45,8 @@ impl Camera {
             u,
             v,
             lens_radius: aperture / 2.0,
+            time0: 0.0,
+            time1: 0.0,
         }
     }
 
@@ -49,23 +54,35 @@ impl Camera {
         let rd = self.lens_radius * Vec3::random_in_unit_circle();
         let offset = self.u * rd.x + self.v * rd.y;
 
-        Ray::new(
+        let mut ray = Ray::new(
             self.origin + offset,
             self.lower_left_corner + s * self.horizontal + t * self.vertical - self.origin - offset,
-        )
+        );
+        let mut rng = rand::thread_rng();
+        ray.time = rng.gen_range(self.time0..self.time1);
+
+        ray
+    }
+
+    pub fn set_time(&mut self, time0: f32, time1: f32) {
+        self.time0 = time0;
+        self.time1 = time1;
     }
 }
 
 impl Default for Camera {
     fn default() -> Self {
-        Self::new(
+        let mut cam = Self::new(
             Vec3::new(13.0, 2.0, 3.0),
             Vec3::zero(),
             Vec3::up(),
             20.0,
             ASPECT_RATIO,
             0.1,
-            10.0
-        )
+            10.0,
+        );
+        cam.set_time(0.0, 1.0);
+
+        cam
     }
 }

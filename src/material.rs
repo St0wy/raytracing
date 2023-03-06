@@ -42,7 +42,7 @@ impl Material {
 
     pub fn scatter(&self, ray_in: &Ray, record: &HitRecord) -> Option<ScatterResult> {
         match self {
-            Material::Lambertian { albedo } => scatter_lambertian(*albedo, record),
+            Material::Lambertian { albedo } => scatter_lambertian(*albedo, ray_in, record),
             Material::Metal { albedo, fuzz } => scatter_metal(*albedo, *fuzz, ray_in, record),
             Material::Dielectric { refraction_index } => {
                 scatter_dielectrics(*refraction_index, ray_in, record)
@@ -51,16 +51,16 @@ impl Material {
     }
 }
 
-fn scatter_lambertian(albedo: Color, record: &HitRecord) -> Option<ScatterResult> {
+fn scatter_lambertian(albedo: Color, ray_in: &Ray, record: &HitRecord) -> Option<ScatterResult> {
     let mut scatter_direction = *record.normal() + Vec3::random_unit_normalized();
     if scatter_direction.is_near_zero() {
         scatter_direction = *record.normal();
     }
 
-    Some(ScatterResult::new(
-        albedo,
-        Ray::new(*record.point(), scatter_direction),
-    ))
+    let mut scattered = Ray::new(*record.point(), scatter_direction);
+    scattered.time = ray_in.time;
+
+    Some(ScatterResult::new(albedo, scattered))
 }
 
 fn scatter_metal(
@@ -70,10 +70,13 @@ fn scatter_metal(
     record: &HitRecord,
 ) -> Option<ScatterResult> {
     let reflected = ray_in.direction().to_unit().reflect(record.normal());
-    let scattered = Ray::new(
+
+    let mut scattered = Ray::new(
         *record.point(),
         reflected + fuzz * Vec3::random_in_unit_sphere(),
     );
+    scattered.time = ray_in.time;
+
     if scattered.direction().dot(record.normal()) > 0.0 {
         Some(ScatterResult::new(albedo, scattered))
     } else {
@@ -106,7 +109,8 @@ fn scatter_dielectrics(
         unit_direction.refract(record.normal(), refraction_ratio)
     };
 
-    let scattered = Ray::new(*record.point(), direction);
+    let mut scattered = Ray::new(*record.point(), direction);
+    scattered.time = ray_in.time;
 
     Some(ScatterResult::new(attenuation, scattered))
 }
