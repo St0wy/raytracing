@@ -102,5 +102,8 @@ fn random_hittable_list() -> HittableList {
     let material = Material::new_metal(Color::new(0.7, 0.6, 0.5), 0.0);
     world.add_sphere(Sphere::new(Vec3::new(4.0, 1.0, 0.0), 1.0, material));
 
+    dbg!(world.len());
+    world.init_bvh_nodes(0.0, 1.0);
+
     world
 }

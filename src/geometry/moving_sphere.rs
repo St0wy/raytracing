@@ -1,3 +1,4 @@
+use crate::geometry::aabb::Aabb;
 use crate::material::Material;
 use crate::{math::vec3::*, ray::Ray};
 
@@ -45,6 +46,21 @@ impl Hittable for MovingSphere {
         );
 
         Some(record)
+    }
+
+    fn bounding_box(&self, time0: f32, time1: f32) -> Option<Aabb> {
+        let radius_vec = Vec3::new(self.radius, self.radius, self.radius);
+        let box0 = Aabb::new(
+            self.center(time0) - radius_vec,
+            self.center(time0) + radius_vec,
+        );
+
+        let box1 = Aabb::new(
+            self.center(time1) - radius_vec,
+            self.center(time1) + radius_vec,
+        );
+
+        Some(Aabb::surrounding_box(box0, box1))
     }
 }
 

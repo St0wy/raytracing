@@ -1,7 +1,11 @@
+use crate::geometry::aabb::Aabb;
+use crate::geometry::bvh::BvhNode;
 use crate::geometry::moving_sphere::MovingSphere;
 use crate::geometry::sphere::Sphere;
 use crate::material::Material;
 use crate::{math::vec3::*, ray::Ray};
+use rand::Rng;
+use std::cmp::Ordering;
 
 #[derive(Debug)]
 pub struct HitRecord<'a> {
@@ -55,11 +59,33 @@ impl<'a> HitRecord<'a> {
 
 pub trait Hittable {
     fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord>;
+    fn bounding_box(&self, time0: f32, time1: f32) -> Option<Aabb>;
+}
+
+#[derive(Copy, Clone, Debug)]
+pub enum HittableObjectType {
+    Sphere,
+    MovingSphere,
+    BvhNode,
+}
+
+#[derive(Copy, Clone, Debug)]
+pub struct HittableObjectIndex {
+    pub object_type: HittableObjectType,
+    pub index: usize,
+}
+
+impl HittableObjectIndex {
+    pub fn new(object_type: HittableObjectType, index: usize) -> Self {
+        HittableObjectIndex { object_type, index }
+    }
 }
 
 pub struct HittableList {
     spheres: Vec<Sphere>,
     moving_spheres: Vec<MovingSphere>,
+    bvh_nodes: Vec<BvhNode>,
+    first_node_index: usize,
 }
 
 impl HittableList {
@@ -67,6 +93,8 @@ impl HittableList {
         Self {
             spheres: Vec::new(),
             moving_spheres: Vec::new(),
+            bvh_nodes: Vec::new(),
+            first_node_index: 0,
         }
     }
 
@@ -78,6 +106,10 @@ impl HittableList {
         self.moving_spheres.push(moving_sphere);
     }
 
+    pub fn len(&self) -> usize {
+        self.spheres.len() + self.moving_spheres.len()
+    }
+
     pub fn clear(&mut self) {
         self.spheres.clear();
     }
@@ -85,32 +117,212 @@ impl HittableList {
     pub fn hit_no_limit(&self, ray: &Ray) -> Option<HitRecord> {
         self.hit(ray, 0.001, f32::INFINITY)
     }
+
+    pub fn hit_at(
+        &self,
+        hittable_object_index: HittableObjectIndex,
+        ray: &Ray,
+        t_min: f32,
+        t_max: f32,
+    ) -> Option<HitRecord> {
+        match hittable_object_index.object_type {
+            HittableObjectType::Sphere => {
+                self.spheres[hittable_object_index.index].hit(ray, t_min, t_max)
+            }
+            HittableObjectType::MovingSphere => {
+                self.moving_spheres[hittable_object_index.index].hit(ray, t_min, t_max)
+            }
+            _ => panic!("Unhandled hit case"),
+        }
+    }
+
+    pub fn get_aabb(
+        &self,
+        hittable_object_index: HittableObjectIndex,
+        time0: f32,
+        time1: f32,
+    ) -> Option<Aabb> {
+        match hittable_object_index.object_type {
+            HittableObjectType::Sphere => {
+                self.spheres[hittable_object_index.index].bounding_box(time0, time1)
+            }
+            HittableObjectType::MovingSphere => {
+                self.moving_spheres[hittable_object_index.index].bounding_box(time0, time1)
+            }
+            HittableObjectType::BvhNode => {
+                Some(self.bvh_nodes[hittable_object_index.index].aabb().clone())
+            }
+        }
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.spheres.is_empty() && self.moving_spheres.is_empty()
+    }
+
+    fn handle_child(
+        &self,
+        child: &HittableObjectIndex,
+        ray: &Ray,
+        t_min: f32,
+        t_max: f32,
+    ) -> Option<HitRecord> {
+        return match child.object_type {
+            HittableObjectType::BvhNode => {
+                self.hit_node(&self.bvh_nodes[child.index], ray, t_min, t_max)
+            }
+            _ => self.hit_at(*child, ray, t_min, t_max),
+        };
+    }
+
+    fn hit_node(&self, node: &BvhNode, ray: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
+        if !node.aabb().hit(ray, t_min, t_max) {
+            ()
+        }
+
+        let record_left = self.handle_child(node.left(), ray, t_min, t_max);
+        let mut left_distance = t_max;
+        let mut record = None;
+        if let Some(record_left) = record_left {
+            left_distance = record_left.t;
+            record = Some(record_left);
+        }
+
+        let record_right = self.handle_child(node.right(), ray, t_min, left_distance);
+        if let Some(record_right) = record_right {
+            if left_distance < record_right.t {
+                record
+            } else {
+                Some(record_right)
+            }
+        } else {
+            record
+        }
+    }
+
+    fn box_compare(
+        &self,
+        time0: f32,
+        time1: f32,
+        axis: usize,
+    ) -> impl FnMut(&HittableObjectIndex, &HittableObjectIndex) -> Ordering + '_ {
+        move |a, b| {
+            let a_bbox = self.get_aabb(*a, time0, time1);
+            let b_bbox = self.get_aabb(*b, time0, time1);
+            if a_bbox.is_none() || b_bbox.is_none() {
+                panic!("no bounding box in bvh node")
+            }
+
+            if a_bbox.unwrap().min()[axis] - b_bbox.unwrap().min()[axis] < 0.0 {
+                Ordering::Less
+            } else {
+                Ordering::Greater
+            }
+        }
+    }
+
+    fn create_node(
+        &mut self,
+        hittables: &mut [HittableObjectIndex],
+        time0: f32,
+        time1: f32,
+    ) -> HittableObjectIndex {
+        let axis = rand::thread_rng().gen_range(0..3) as usize;
+
+        let len = hittables.len();
+        let (left, right) = match len {
+            0 => panic!("0 Hittables provided to node creation"),
+            1 => (hittables[0].clone(), hittables[0].clone()),
+            2 => (hittables[0].clone(), hittables[1].clone()),
+            _ => {
+                hittables.sort_unstable_by(self.box_compare(time0, time1, axis));
+                let mid = len / 2;
+                (
+                    self.create_node(&mut hittables[0..mid], time0, time1),
+                    self.create_node(&mut hittables[mid..len], time0, time1),
+                )
+            }
+        };
+
+        let left_box = self.get_aabb(left, time0, time1);
+        let right_box = self.get_aabb(right, time0, time1);
+
+        if left_box.is_none() || right_box.is_none() {
+            panic!("No bounding box in Bvh Node");
+        }
+
+        let aabb = Aabb::surrounding_box(left_box.unwrap(), right_box.unwrap());
+
+        let node = BvhNode::new(left, right, aabb);
+        self.bvh_nodes.push(node);
+
+        HittableObjectIndex::new(HittableObjectType::BvhNode, self.bvh_nodes.len() - 1)
+    }
+
+    pub fn init_bvh_nodes(&mut self, time0: f32, time1: f32) {
+        let mut hittable = Vec::new();
+
+        for i in 0..self.spheres.len() {
+            hittable.push(HittableObjectIndex::new(HittableObjectType::Sphere, i))
+        }
+
+        for i in 0..self.moving_spheres.len() {
+            hittable.push(HittableObjectIndex::new(
+                HittableObjectType::MovingSphere,
+                i,
+            ))
+        }
+
+        let node = self.create_node(&mut hittable[..], time0, time1);
+        dbg!(&self.bvh_nodes.len());
+        self.first_node_index = node.index;
+    }
 }
 
 impl Hittable for HittableList {
     fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
-        let mut record_option: Option<HitRecord> = None;
-        let mut closest_distance = t_max;
+        let first = self.bvh_nodes.get(self.first_node_index);
 
+        if first.is_none() {
+            eprintln!("This is sus...");
+            return None;
+        }
+
+        self.hit_node(&first.unwrap(), ray, t_min, t_max)
+    }
+
+    fn bounding_box(&self, time0: f32, time1: f32) -> Option<Aabb> {
+        if self.is_empty() {
+            return None;
+        }
+
+        let mut temp_box: Aabb;
+        let mut output_box = Aabb::empty();
+        let mut first_box = true;
+
+        // TODO: Refactor this to not duplicate loop (maybe ask on the rust discord ?)
         for object in self.spheres.iter() {
-            let record = object.hit(ray, t_min, closest_distance);
-            if record.is_some() {
-                let record = record.unwrap();
-                closest_distance = record.t;
-                record_option = Some(record);
-            }
+            temp_box = object.bounding_box(time0, time1)?;
+            output_box = if first_box {
+                temp_box
+            } else {
+                Aabb::surrounding_box(output_box, temp_box)
+            };
+
+            first_box = false;
         }
 
         for object in self.moving_spheres.iter() {
-            let record = object.hit(ray, t_min, closest_distance);
-            if record.is_some() {
-                let record = record.unwrap();
-                closest_distance = record.t;
-                record_option = Some(record);
-            }
+            temp_box = object.bounding_box(time0, time1)?;
+            output_box = if first_box {
+                temp_box
+            } else {
+                Aabb::surrounding_box(output_box, temp_box)
+            };
+
+            first_box = false;
         }
 
-        record_option
+        None
     }
 }
 
