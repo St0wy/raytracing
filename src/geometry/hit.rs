@@ -267,6 +267,30 @@ impl HittableList {
     }
 }
 
+fn get_objects_bounding_box<T: Hittable>(items: &Vec<T>, time0: f32, time1: f32) -> Option<Aabb> {
+    if items.is_empty() {
+        return None;
+    }
+
+    let mut temp_box: Aabb;
+    let mut output_box = Aabb::empty();
+    let mut first_box = true;
+
+    for object in items.iter() {
+        temp_box = object.bounding_box(time0, time1)?;
+
+        output_box = if first_box {
+            temp_box
+        } else {
+            Aabb::surrounding_box(output_box, temp_box)
+        };
+
+        first_box = false;
+    }
+
+    Some(output_box)
+}
+
 impl Hittable for HittableList {
     fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
         let first = self.bvh_nodes.get(self.first_node_index);
@@ -283,34 +307,18 @@ impl Hittable for HittableList {
             return None;
         }
 
-        let mut temp_box: Aabb;
-        let mut output_box = Aabb::empty();
-        let mut first_box = true;
+        let spheres_box = get_objects_bounding_box(&self.spheres, time0, time1);
+        let moving_spheres_box = get_objects_bounding_box(&self.moving_spheres, time0, time1);
 
-        // TODO: Refactor this to not duplicate loop (maybe ask on the rust discord ?)
-        for object in self.spheres.iter() {
-            temp_box = object.bounding_box(time0, time1)?;
-            output_box = if first_box {
-                temp_box
-            } else {
-                Aabb::surrounding_box(output_box, temp_box)
-            };
-
-            first_box = false;
+        if spheres_box.is_none() {
+            return moving_spheres_box;
         }
 
-        for object in self.moving_spheres.iter() {
-            temp_box = object.bounding_box(time0, time1)?;
-            output_box = if first_box {
-                temp_box
-            } else {
-                Aabb::surrounding_box(output_box, temp_box)
-            };
-
-            first_box = false;
+        if moving_spheres_box.is_none() {
+            return spheres_box;
         }
 
-        None
+        Some(Aabb::surrounding_box(spheres_box?, moving_spheres_box?))
     }
 }
 
