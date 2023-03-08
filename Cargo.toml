@@ -4,9 +4,11 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+human-time = "0.1.6"
 indicatif = "0.17.3"
 png = "0.17.7"
 rand = "0.8.5"
+rand_chacha = "0.3.1"
 rayon = "1.6.1"
 
 [dev-dependencies]
@@ -21,6 +23,7 @@ harness = false
 #lto = true
 #codegen-units = 1
 #panic = "abort"
+debug = 1
 
 # Disable rust bench because this project uses criterion
 [lib]

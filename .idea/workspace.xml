@@ -16,13 +16,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5d57bb42-7a3c-4d47-af3f-38b6573f1724" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/geometry/aabb.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/geometry/bvh.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/benches/my_benchmark.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/my_benchmark.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/geometry/hit.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/hit.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/geometry/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/mod.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/geometry/moving_sphere.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/moving_sphere.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/geometry/sphere.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/sphere.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/math/color.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/math/color.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/renderer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/scene.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -42,6 +44,9 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$USER_HOME$/.cargo/registry/src/github.com-1ecc6299db9ec823/rand_chacha-0.3.1/src/chacha.rs" root0="SKIP_INSPECTION" />
   </component>
   <component name="MacroExpansionManager">
     <option name="directoryName" value="kbrkzrnm" />
@@ -77,7 +82,7 @@
     "nodejs_package_manager_path": "npm",
     "org.rust.cargo.project.model.PROJECT_DISCOVERY": "true",
     "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "CPPToolchains",
+    "settings.editor.selected.configurable": "terminal",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -149,6 +154,7 @@
       <workItem from="1678191624285" duration="24000" />
       <workItem from="1678192842521" duration="59000" />
       <workItem from="1678192908981" duration="12176000" />
+      <workItem from="1678262978369" duration="13695000" />
     </task>
     <servers />
   </component>

@@ -15,7 +15,8 @@ pub struct MovingSphere {
 
 impl Hittable for MovingSphere {
     fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
-        let oc = ray.origin() - self.center(ray.time);
+        let center = self.center(ray.time);
+        let oc = ray.origin() - center;
         let direction = ray.direction();
         let a = direction.squared_magnitude();
         let half_b = oc.dot(&direction);
@@ -36,7 +37,7 @@ impl Hittable for MovingSphere {
         }
 
         let point = ray.at(root);
-        let outward_normal = (point - self.center(ray.time)) / self.radius;
+        let outward_normal = (point - center) / self.radius;
         let record = HitRecord::new(
             point,
             root,

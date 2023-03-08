@@ -120,19 +120,21 @@ impl HittableList {
 
     pub fn hit_at(
         &self,
-        hittable_object_index: HittableObjectIndex,
+        hittable_object_index: &HittableObjectIndex,
         ray: &Ray,
         t_min: f32,
         t_max: f32,
     ) -> Option<HitRecord> {
         match hittable_object_index.object_type {
+            HittableObjectType::BvhNode => {
+                self.hit_node(&self.bvh_nodes[hittable_object_index.index], ray, t_min, t_max)
+            }
             HittableObjectType::Sphere => {
                 self.spheres[hittable_object_index.index].hit(ray, t_min, t_max)
             }
             HittableObjectType::MovingSphere => {
                 self.moving_spheres[hittable_object_index.index].hit(ray, t_min, t_max)
             }
-            _ => panic!("Unhandled hit case"),
         }
     }
 
@@ -159,35 +161,20 @@ impl HittableList {
         self.spheres.is_empty() && self.moving_spheres.is_empty()
     }
 
-    fn handle_child(
-        &self,
-        child: &HittableObjectIndex,
-        ray: &Ray,
-        t_min: f32,
-        t_max: f32,
-    ) -> Option<HitRecord> {
-        return match child.object_type {
-            HittableObjectType::BvhNode => {
-                self.hit_node(&self.bvh_nodes[child.index], ray, t_min, t_max)
-            }
-            _ => self.hit_at(*child, ray, t_min, t_max),
-        };
-    }
-
     fn hit_node(&self, node: &BvhNode, ray: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
         if !node.aabb().hit(ray, t_min, t_max) {
             ()
         }
 
-        let record_left = self.handle_child(node.left(), ray, t_min, t_max);
+        let record_left_option = self.hit_at(node.left(), ray, t_min, t_max);
         let mut left_distance = t_max;
         let mut record = None;
-        if let Some(record_left) = record_left {
+        if let Some(record_left) = record_left_option {
             left_distance = record_left.t;
             record = Some(record_left);
         }
 
-        let record_right = self.handle_child(node.right(), ray, t_min, left_distance);
+        let record_right = self.hit_at(node.right(), ray, t_min, left_distance);
         if let Some(record_right) = record_right {
             if left_distance < record_right.t {
                 record
@@ -273,7 +260,6 @@ impl HittableList {
         }
 
         let node = self.create_node(&mut hittable[..], time0, time1);
-        dbg!(&self.bvh_nodes.len());
         self.first_node_index = node.index;
     }
 }

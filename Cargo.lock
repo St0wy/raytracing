@@ -268,6 +268,25 @@ dependencies = [
 ]
 
 [[package]]
+name = "human-time"
+version = "0.1.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "259822ea527bd0d5ebf3108d84e98ac4f20769e2e8b2f3ab76e1dd6e21de7f3c"
+dependencies = [
+ "human-time-macros",
+]
+
+[[package]]
+name = "human-time-macros"
+version = "0.1.8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a04129f85bfd960234ed3fa53212a4904881e024322e804ac5a48da239e44a09"
+dependencies = [
+ "quote",
+ "syn",
+]
+
+[[package]]
 name = "indexmap"
 version = "1.9.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -522,9 +541,11 @@ name = "raytracing"
 version = "0.1.0"
 dependencies = [
  "criterion",
+ "human-time",
  "indicatif",
  "png",
  "rand",
+ "rand_chacha",
  "rayon",
 ]
 

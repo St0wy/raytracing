@@ -4,6 +4,7 @@ use raytracing::consts::*;
 use raytracing::geometry::hit::HittableList;
 use raytracing::geometry::sphere::Sphere;
 use raytracing::material::Material;
+use raytracing::math::color::Color;
 use raytracing::math::vec3::*;
 use raytracing::renderer::render_no_bar;
 use raytracing::scene::Scene;

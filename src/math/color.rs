@@ -25,16 +25,24 @@ impl Color {
 
     pub fn random() -> Self {
         let mut rng = rand::thread_rng();
+        Self::random_specific(&mut rng)
+    }
+
+    pub fn random_specific(rng: &mut impl Rng) -> Self {
         Self::new(rng.gen(), rng.gen(), rng.gen())
     }
 
     pub fn random_range(range: Range<f32>) -> Self {
         let mut rng = rand::thread_rng();
+        Self::random_range_specific(range, &mut rng)
+    }
+
+    pub fn random_range_specific(range: Range<f32>, rng: &mut impl Rng) -> Self {
         let between = Uniform::from(range);
         Self::new(
-            between.sample(&mut rng),
-            between.sample(&mut rng),
-            between.sample(&mut rng),
+            between.sample(rng),
+            between.sample(rng),
+            between.sample(rng),
         )
     }
 

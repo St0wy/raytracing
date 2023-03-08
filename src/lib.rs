@@ -8,7 +8,7 @@ pub mod renderer;
 pub mod scene;
 
 use consts::*;
-use indicatif::HumanDuration;
+use human_time::ToHumanTimeString;
 use math::vec3::*;
 use std::io::BufWriter;
 use std::path::Path;
@@ -30,8 +30,11 @@ pub fn run_random_scene() {
     }
 
     let start = Instant::now();
-    let pixels = render_single_core(&Scene::random(), IMAGE_WIDTH, IMAGE_HEIGHT);
-    println!("Raytracing finished in {}", HumanDuration(start.elapsed()));
+    let pixels = render_single_core(&Scene::big_scene(), IMAGE_WIDTH, IMAGE_HEIGHT);
+    println!(
+        "Raytracing finished in {}",
+        start.elapsed().to_human_time_string()
+    );
 
     write_image(&pixels, Path::new(FILE_DEFAULT_PATH));
 }
@@ -53,7 +56,10 @@ pub fn run_same_as_bench() {
 
     let pixels = render_no_bar(&scene, IMAGE_WIDTH, IMAGE_HEIGHT);
 
-    println!("Finished in {}", HumanDuration(start.elapsed()));
+    println!(
+        "Raytracing finished in {}",
+        start.elapsed().to_human_time_string()
+    );
 
     write_image(&pixels, Path::new(FILE_DEFAULT_PATH));
 }

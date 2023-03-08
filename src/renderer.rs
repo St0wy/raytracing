@@ -51,7 +51,7 @@ fn write_color(pixels: &mut Vec<u8>, color: Color) {
 }
 
 pub fn render_single_core(scene: &Scene, image_width: usize, image_height: usize) -> Vec<u8> {
-    let bar = &Box::new(ProgressBar::new(((image_width * image_height) / 64) as u64));
+    let bar = &Box::new(ProgressBar::new(((image_width * image_height) / 256) as u64));
     bar.set_prefix("🎨  Rendering");
     bar.set_style(
         ProgressStyle::default_bar()
@@ -75,7 +75,7 @@ pub fn render_single_core(scene: &Scene, image_width: usize, image_height: usize
             }
 
             // Increment the loading bar (not all the time to save perf)
-            if i % 64 == 0 {
+            if i % 256 == 0 {
                 bar.inc(1);
             }
 
