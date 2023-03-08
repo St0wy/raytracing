@@ -126,9 +126,12 @@ impl HittableList {
         t_max: f32,
     ) -> Option<HitRecord> {
         match hittable_object_index.object_type {
-            HittableObjectType::BvhNode => {
-                self.hit_node(&self.bvh_nodes[hittable_object_index.index], ray, t_min, t_max)
-            }
+            HittableObjectType::BvhNode => self.hit_node(
+                &self.bvh_nodes[hittable_object_index.index],
+                ray,
+                t_min,
+                t_max,
+            ),
             HittableObjectType::Sphere => {
                 self.spheres[hittable_object_index.index].hit(ray, t_min, t_max)
             }
@@ -163,7 +166,7 @@ impl HittableList {
 
     fn hit_node(&self, node: &BvhNode, ray: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
         if !node.aabb().hit(ray, t_min, t_max) {
-            ()
+            return None;
         }
 
         let record_left_option = self.hit_at(node.left(), ray, t_min, t_max);
@@ -269,8 +272,7 @@ impl Hittable for HittableList {
         let first = self.bvh_nodes.get(self.first_node_index);
 
         if first.is_none() {
-            eprintln!("This is sus...");
-            return None;
+            panic!("There should be nodes in the hittable list.");
         }
 
         self.hit_node(&first.unwrap(), ray, t_min, t_max)

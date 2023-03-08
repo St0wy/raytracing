@@ -19,18 +19,18 @@ use crate::geometry::hit::HittableList;
 use crate::geometry::sphere::Sphere;
 use crate::material::Material;
 use crate::math::color::Color;
-use crate::renderer::{render_no_bar, render_single_core};
+use crate::renderer::{render_no_bar, render_no_bar_multithreaded};
 use crate::scene::Scene;
 
 const FILE_DEFAULT_PATH: &str = "out.png";
 
-pub fn run_random_scene() {
+pub fn run_big_scene() {
     if cfg!(debug_assertions) {
         println!("You are rendering this scene in debug, which is very slow. Make sure you don't want to run it in release mode.")
     }
 
     let start = Instant::now();
-    let pixels = render_single_core(&Scene::big_scene(), IMAGE_WIDTH, IMAGE_HEIGHT);
+    let pixels = render_no_bar_multithreaded(&Scene::big_scene(), IMAGE_WIDTH, IMAGE_HEIGHT);
     println!(
         "Raytracing finished in {}",
         start.elapsed().to_human_time_string()

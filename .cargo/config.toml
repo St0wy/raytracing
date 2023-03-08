@@ -1,2 +1,2 @@
-#[target.release]
-#rustflags = ["-C", "target-cpu=native"]
+[target.release]
+rustflags = ["-C", "target-cpu=native"]

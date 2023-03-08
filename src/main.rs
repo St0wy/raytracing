@@ -1,5 +1,5 @@
-use raytracing::run_random_scene;
+use raytracing::run_big_scene;
 
 fn main() {
-    run_random_scene();
+    run_big_scene();
 }

@@ -5,6 +5,7 @@ use crate::material::Material;
 use crate::math::color::Color;
 use crate::math::vec3::Vec3;
 use rand::{Rng, SeedableRng};
+use crate::geometry::moving_sphere::MovingSphere;
 
 pub struct Scene {
     hittable_list: HittableList,
@@ -72,19 +73,25 @@ fn fixed_big_scene() -> HittableList {
             );
 
             if (center - Vec3::new(4.0, 0.2, 0.0)).magnitude() > 0.9 {
-                if choose_mat < 0.8 {
-                    // Diffuse
-                    let albedo = Color::random_specific(&mut rng) * Color::random_specific(&mut rng);
+                if choose_mat < 0.4 {
+                    // Diffuse moving
+                    let albedo =
+                        Color::random_specific(&mut rng) * Color::random_specific(&mut rng);
                     let sphere_material = Material::new_lambertian(albedo);
-                    // let center2 = center + Vec3::new(0.0, rng.gen_range(0.0..0.5), 0.0);
-                    // world.add_moving_sphere(MovingSphere::new(
-                    //     center,
-                    //     center2,
-                    //     0.0,
-                    //     1.0,
-                    //     0.2,
-                    //     sphere_material,
-                    // ));
+                    let center2 = center + Vec3::new(0.0, rng.gen_range(0.0..0.5), 0.0);
+                    world.add_moving_sphere(MovingSphere::new(
+                        center,
+                        center2,
+                        0.0,
+                        1.0,
+                        0.2,
+                        sphere_material,
+                    ));
+                } else if choose_mat < 0.8 {
+                    // Diffuse not moving
+                    let albedo =
+                        Color::random_specific(&mut rng) * Color::random_specific(&mut rng);
+                    let sphere_material = Material::new_lambertian(albedo);
                     world.add_sphere(Sphere::new(center, 0.2, sphere_material));
                 } else if choose_mat < 0.95 {
                     // Metal 🤘

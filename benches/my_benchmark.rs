@@ -6,7 +6,7 @@ use raytracing::geometry::sphere::Sphere;
 use raytracing::material::Material;
 use raytracing::math::color::Color;
 use raytracing::math::vec3::*;
-use raytracing::renderer::render_no_bar;
+use raytracing::renderer::{render_no_bar_multithreaded};
 use raytracing::scene::Scene;
 use std::time::Duration;
 
@@ -19,6 +19,7 @@ fn criterion_benchmark(c: &mut Criterion) {
     world.add_sphere(Sphere::new(Vec3::new(-4.0, 1.0, 0.0), 1.0, material));
     let material = Material::new_metal(Color::new(0.7, 0.6, 0.5), 0.0);
     world.add_sphere(Sphere::new(Vec3::new(4.0, 1.0, 0.0), 1.0, material));
+    world.init_bvh_nodes(0.0, 1.0);
 
     let camera = Camera::default();
 
@@ -26,7 +27,7 @@ fn criterion_benchmark(c: &mut Criterion) {
 
     c.bench_function("render", |b| {
         b.iter(|| {
-            render_no_bar(&scene, IMAGE_WIDTH, IMAGE_HEIGHT);
+            render_no_bar_multithreaded(&scene, IMAGE_WIDTH, IMAGE_HEIGHT);
         })
     });
 }

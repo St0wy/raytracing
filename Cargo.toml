@@ -5,7 +5,7 @@ edition = "2021"
 
 [dependencies]
 human-time = "0.1.6"
-indicatif = "0.17.3"
+indicatif = { version = "0.17.3", features = ["rayon"] }
 png = "0.17.7"
 rand = "0.8.5"
 rand_chacha = "0.3.1"
@@ -19,11 +19,11 @@ name = "my_benchmark"
 harness = false
 
 [profile.release]
-#strip = true
-#lto = true
-#codegen-units = 1
-#panic = "abort"
-debug = 1
+strip = true
+lto = true
+codegen-units = 1
+panic = "abort"
+#debug = 1
 
 # Disable rust bench because this project uses criterion
 [lib]
