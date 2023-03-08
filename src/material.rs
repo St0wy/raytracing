@@ -2,6 +2,7 @@ use crate::geometry::hit::HitRecord;
 use crate::math::color::Color;
 use crate::math::vec3::Vec3;
 use crate::ray::Ray;
+use crate::texture::Texture;
 use rand::Rng;
 
 #[derive(Default)]
@@ -21,13 +22,19 @@ impl ScatterResult {
 
 #[derive(Debug)]
 pub enum Material {
-    Lambertian { albedo: Color },
+    Lambertian { albedo: Texture },
     Metal { albedo: Color, fuzz: f32 },
     Dielectric { refraction_index: f32 },
 }
 
 impl Material {
-    pub fn new_lambertian(albedo: Color) -> Self {
+    pub fn new_lambertian_color(albedo: Color) -> Self {
+        Self::Lambertian {
+            albedo: Texture::SolidColor(albedo),
+        }
+    }
+
+    pub fn new_lambertian(albedo: Texture) -> Self {
         Self::Lambertian { albedo }
     }
 
@@ -42,8 +49,8 @@ impl Material {
 
     pub fn scatter(&self, ray_in: &Ray, record: &HitRecord) -> Option<ScatterResult> {
         match self {
-            Material::Lambertian { albedo } => scatter_lambertian(*albedo, ray_in, record),
-            Material::Metal { albedo, fuzz } => scatter_metal(*albedo, *fuzz, ray_in, record),
+            Material::Lambertian { albedo } => scatter_lambertian(albedo, ray_in, record),
+            Material::Metal { albedo, fuzz } => scatter_metal(albedo, *fuzz, ray_in, record),
             Material::Dielectric { refraction_index } => {
                 scatter_dielectrics(*refraction_index, ray_in, record)
             }
@@ -51,7 +58,7 @@ impl Material {
     }
 }
 
-fn scatter_lambertian(albedo: Color, ray_in: &Ray, record: &HitRecord) -> Option<ScatterResult> {
+fn scatter_lambertian(albedo: &Texture, ray_in: &Ray, record: &HitRecord) -> Option<ScatterResult> {
     let mut scatter_direction = *record.normal() + Vec3::random_unit_normalized();
     if scatter_direction.is_near_zero() {
         scatter_direction = *record.normal();
@@ -59,12 +66,13 @@ fn scatter_lambertian(albedo: Color, ray_in: &Ray, record: &HitRecord) -> Option
 
     let mut scattered = Ray::new(*record.point(), scatter_direction);
     scattered.time = ray_in.time;
+    let attenuation = albedo.value(record.u(), record.v(), record.point());
 
-    Some(ScatterResult::new(albedo, scattered))
+    Some(ScatterResult::new(attenuation, scattered))
 }
 
 fn scatter_metal(
-    albedo: Color,
+    albedo: &Color,
     fuzz: f32,
     ray_in: &Ray,
     record: &HitRecord,
@@ -78,7 +86,7 @@ fn scatter_metal(
     scattered.time = ray_in.time;
 
     if scattered.direction().dot(record.normal()) > 0.0 {
-        Some(ScatterResult::new(albedo, scattered))
+        Some(ScatterResult::new(*albedo, scattered))
     } else {
         None
     }

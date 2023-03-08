@@ -1,6 +1,7 @@
 use crate::geometry::aabb::Aabb;
 use crate::material::Material;
 use crate::{math::vec3::*, ray::Ray};
+use std::f32::consts::PI;
 
 use super::hit::{HitRecord, Hittable};
 
@@ -8,6 +9,23 @@ pub struct Sphere {
     center: Vec3,
     radius: f32,
     material: Material,
+}
+
+impl Sphere {
+    pub fn new(center: Vec3, radius: f32, material: Material) -> Self {
+        Self {
+            center,
+            radius,
+            material,
+        }
+    }
+
+    pub fn get_sphere_uv(p: &Vec3) -> (f32, f32) {
+        let theta = f32::acos(-p.y);
+        let phi = f32::atan2(-p.z, p.x) + PI;
+
+        (phi / (2.0 * PI), theta / PI)
+    }
 }
 
 impl Hittable for Sphere {
@@ -34,9 +52,12 @@ impl Hittable for Sphere {
 
         let point = ray.at(root);
         let outward_normal = (point - self.center) / self.radius;
+        let (u, v) = Sphere::get_sphere_uv(&outward_normal);
         let record = HitRecord::new(
             point,
             root,
+            u,
+            v,
             outward_normal,
             &ray.direction(),
             &self.material,
@@ -52,15 +73,5 @@ impl Hittable for Sphere {
             self.center - radius_vec,
             self.center + radius_vec,
         ))
-    }
-}
-
-impl Sphere {
-    pub fn new(center: Vec3, radius: f32, material: Material) -> Self {
-        Self {
-            center,
-            radius,
-            material,
-        }
     }
 }

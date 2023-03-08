@@ -6,6 +6,7 @@ pub mod math;
 pub mod ray;
 pub mod renderer;
 pub mod scene;
+pub mod texture;
 
 use consts::*;
 use human_time::ToHumanTimeString;
@@ -30,7 +31,7 @@ pub fn run_big_scene() {
     }
 
     let start = Instant::now();
-    let pixels = render_no_bar_multithreaded(&Scene::big_scene(), IMAGE_WIDTH, IMAGE_HEIGHT);
+    let pixels = render_no_bar_multithreaded(&Scene::two_spheres(), IMAGE_WIDTH, IMAGE_HEIGHT);
     println!(
         "Raytracing finished in {}",
         start.elapsed().to_human_time_string()
@@ -46,7 +47,7 @@ pub fn run_same_as_bench() {
     world.add_sphere(Sphere::new(Vec3::new(4.0, 1.0, 0.0), 1.0, material));
     let material = Material::new_metal(Color::new(0.7, 0.6, 0.5), 0.0);
     world.add_sphere(Sphere::new(Vec3::new(0.0, 1.0, 0.0), 1.0, material));
-    let material = Material::new_lambertian(Color::new(0.4, 0.2, 0.1));
+    let material = Material::new_lambertian_color(Color::new(0.4, 0.2, 0.1));
     world.add_sphere(Sphere::new(Vec3::new(-4.0, 1.0, 0.0), 1.0, material));
 
     let camera = Camera::default();

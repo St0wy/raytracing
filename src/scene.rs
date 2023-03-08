@@ -5,6 +5,7 @@ use crate::geometry::sphere::Sphere;
 use crate::material::Material;
 use crate::math::color::Color;
 use crate::math::vec3::Vec3;
+use crate::texture::Texture;
 use rand::{Rng, SeedableRng};
 
 pub struct Scene {
@@ -34,6 +35,32 @@ impl Scene {
         }
     }
 
+    pub fn two_spheres() -> Self {
+        let mut hittable_list = HittableList::new();
+        let checker = Texture::new_checker(
+            Texture::new_solid_color(Color::new(0.2, 0.3, 0.1)),
+            Texture::new_solid_color(Color::new(0.9, 0.9, 0.9)),
+        );
+
+        hittable_list.add_sphere(Sphere::new(
+            Vec3::new(0.0, -10.0, 0.0),
+            10.0,
+            Material::new_lambertian(checker.clone()),
+        ));
+        hittable_list.add_sphere(Sphere::new(
+            Vec3::new(0.0, 10.0, 0.0),
+            10.0,
+            Material::new_lambertian(checker),
+        ));
+
+        hittable_list.init_bvh_nodes(0.0, 1.0);
+
+        Self {
+            hittable_list,
+            camera: Camera::default(),
+        }
+    }
+
     pub fn hittable_list(&self) -> &HittableList {
         &self.hittable_list
     }
@@ -54,7 +81,11 @@ impl Scene {
 fn fixed_big_scene() -> HittableList {
     let mut world = HittableList::new();
 
-    let material_ground = Material::new_lambertian(Color::new(0.5, 0.5, 0.5));
+    let checker = Texture::new_checker(
+        Texture::new_solid_color(Color::new(0.2, 0.3, 0.1)),
+        Texture::new_solid_color(Color::new(0.9, 0.9, 0.9)),
+    );
+    let material_ground = Material::new_lambertian(checker);
     world.add_sphere(Sphere::new(
         Vec3::new(0.0, -1000.0, -1.0),
         1000.0,
@@ -77,7 +108,7 @@ fn fixed_big_scene() -> HittableList {
                     // Diffuse moving
                     let albedo =
                         Color::random_specific(&mut rng) * Color::random_specific(&mut rng);
-                    let sphere_material = Material::new_lambertian(albedo);
+                    let sphere_material = Material::new_lambertian_color(albedo);
                     let center2 = center + Vec3::new(0.0, rng.gen_range(0.0..0.5), 0.0);
                     world.add_moving_sphere(MovingSphere::new(
                         center,
@@ -91,7 +122,7 @@ fn fixed_big_scene() -> HittableList {
                     // Diffuse not moving
                     let albedo =
                         Color::random_specific(&mut rng) * Color::random_specific(&mut rng);
-                    let sphere_material = Material::new_lambertian(albedo);
+                    let sphere_material = Material::new_lambertian_color(albedo);
                     world.add_sphere(Sphere::new(center, 0.2, sphere_material));
                 } else if choose_mat < 0.95 {
                     // Metal 🤘
@@ -110,7 +141,7 @@ fn fixed_big_scene() -> HittableList {
 
     let material = Material::new_dielectric(1.5);
     world.add_sphere(Sphere::new(Vec3::new(0.0, 1.0, 0.0), 1.0, material));
-    let material = Material::new_lambertian(Color::new(0.4, 0.2, 0.1));
+    let material = Material::new_lambertian_color(Color::new(0.4, 0.2, 0.1));
     world.add_sphere(Sphere::new(Vec3::new(-4.0, 1.0, 0.0), 1.0, material));
     let material = Material::new_metal(Color::new(0.7, 0.6, 0.5), 0.0);
     world.add_sphere(Sphere::new(Vec3::new(4.0, 1.0, 0.0), 1.0, material));
@@ -123,7 +154,7 @@ fn fixed_big_scene() -> HittableList {
 fn random_hittable_list() -> HittableList {
     let mut world = HittableList::new();
 
-    let material_ground = Material::new_lambertian(Color::new(0.5, 0.5, 0.5));
+    let material_ground = Material::new_lambertian_color(Color::new(0.5, 0.5, 0.5));
     world.add_sphere(Sphere::new(
         Vec3::new(0.0, -1000.0, -1.0),
         1000.0,
@@ -146,7 +177,7 @@ fn random_hittable_list() -> HittableList {
                     // Diffuse moving
                     let albedo =
                         Color::random_specific(&mut rng) * Color::random_specific(&mut rng);
-                    let sphere_material = Material::new_lambertian(albedo);
+                    let sphere_material = Material::new_lambertian_color(albedo);
                     let center2 = center + Vec3::new(0.0, rng.gen_range(0.0..0.5), 0.0);
                     world.add_moving_sphere(MovingSphere::new(
                         center,
@@ -159,7 +190,7 @@ fn random_hittable_list() -> HittableList {
                 } else if choose_mat < 0.8 {
                     // Diffuse
                     let albedo = Color::random() * Color::random();
-                    let sphere_material = Material::new_lambertian(albedo);
+                    let sphere_material = Material::new_lambertian_color(albedo);
                     world.add_sphere(Sphere::new(center, 0.2, sphere_material));
                 } else if choose_mat < 0.95 {
                     // Metal 🤘
@@ -178,7 +209,7 @@ fn random_hittable_list() -> HittableList {
 
     let material = Material::new_dielectric(1.5);
     world.add_sphere(Sphere::new(Vec3::new(0.0, 1.0, 0.0), 1.0, material));
-    let material = Material::new_lambertian(Color::new(0.4, 0.2, 0.1));
+    let material = Material::new_lambertian_color(Color::new(0.4, 0.2, 0.1));
     world.add_sphere(Sphere::new(Vec3::new(-4.0, 1.0, 0.0), 1.0, material));
     let material = Material::new_metal(Color::new(0.7, 0.6, 0.5), 0.0);
     world.add_sphere(Sphere::new(Vec3::new(4.0, 1.0, 0.0), 1.0, material));

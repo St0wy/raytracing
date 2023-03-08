@@ -15,7 +15,7 @@ fn criterion_benchmark(c: &mut Criterion) {
 
     let material = Material::new_dielectric(1.5);
     world.add_sphere(Sphere::new(Vec3::new(0.0, 1.0, 0.0), 1.0, material));
-    let material = Material::new_lambertian(Color::new(0.4, 0.2, 0.1));
+    let material = Material::new_lambertian_color(Color::new(0.4, 0.2, 0.1));
     world.add_sphere(Sphere::new(Vec3::new(-4.0, 1.0, 0.0), 1.0, material));
     let material = Material::new_metal(Color::new(0.7, 0.6, 0.5), 0.0);
     world.add_sphere(Sphere::new(Vec3::new(4.0, 1.0, 0.0), 1.0, material));

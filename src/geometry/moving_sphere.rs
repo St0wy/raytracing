@@ -1,4 +1,5 @@
 use crate::geometry::aabb::Aabb;
+use crate::geometry::sphere::Sphere;
 use crate::material::Material;
 use crate::{math::vec3::*, ray::Ray};
 
@@ -38,9 +39,12 @@ impl Hittable for MovingSphere {
 
         let point = ray.at(root);
         let outward_normal = (point - center) / self.radius;
+        let (u, v) = Sphere::get_sphere_uv(&outward_normal);
         let record = HitRecord::new(
             point,
             root,
+            u,
+            v,
             outward_normal,
             &ray.direction(),
             &self.material,
