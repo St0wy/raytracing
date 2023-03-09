@@ -4,6 +4,7 @@ use crate::geometry::moving_sphere::MovingSphere;
 use crate::geometry::sphere::Sphere;
 use crate::material::Material;
 use crate::math::color::Color;
+use crate::math::perlin::Perlin;
 use crate::math::vec3::Vec3;
 use crate::texture::Texture;
 use rand::{Rng, SeedableRng};
@@ -51,6 +52,29 @@ impl Scene {
             Vec3::new(0.0, 10.0, 0.0),
             10.0,
             Material::new_lambertian(checker),
+        ));
+
+        hittable_list.init_bvh_nodes(0.0, 1.0);
+
+        Self {
+            hittable_list,
+            camera: Camera::default(),
+        }
+    }
+
+    pub fn two_perlin_spheres() -> Self {
+        let mut hittable_list = HittableList::new();
+        let perlin_texture = Texture::Noise(Perlin::new());
+
+        hittable_list.add_sphere(Sphere::new(
+            Vec3::new(0.0, -1000.0, 0.0),
+            1000.0,
+            Material::new_lambertian(perlin_texture.clone()),
+        ));
+        hittable_list.add_sphere(Sphere::new(
+            Vec3::new(0.0, 2.0, 0.0),
+            2.0,
+            Material::new_lambertian(perlin_texture),
         ));
 
         hittable_list.init_bvh_nodes(0.0, 1.0);

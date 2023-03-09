@@ -1,4 +1,5 @@
 use crate::math::color::Color;
+use crate::math::perlin::Perlin;
 use crate::math::vec3::Vec3;
 
 #[derive(Debug, Clone)]
@@ -8,6 +9,7 @@ pub enum Texture {
         odd: Box<Texture>,
         even: Box<Texture>,
     },
+    Noise(Perlin),
 }
 
 impl Texture {
@@ -22,6 +24,10 @@ impl Texture {
         }
     }
 
+    pub fn new_noise(noise: Perlin) -> Self {
+        Texture::Noise(noise)
+    }
+
     pub fn value(&self, u: f32, v: f32, p: &Vec3) -> Color {
         match self {
             Texture::SolidColor(color) => *color,
@@ -33,6 +39,7 @@ impl Texture {
                     even.value(u, v, p)
                 }
             }
+            Texture::Noise(noise) => Color::white() * noise.noise(p),
         }
     }
 }

@@ -31,7 +31,7 @@ pub fn run_big_scene() {
     }
 
     let start = Instant::now();
-    let pixels = render_no_bar_multithreaded(&Scene::two_spheres(), IMAGE_WIDTH, IMAGE_HEIGHT);
+    let pixels = render_no_bar_multithreaded(&Scene::two_perlin_spheres(), IMAGE_WIDTH, IMAGE_HEIGHT);
     println!(
         "Raytracing finished in {}",
         start.elapsed().to_human_time_string()
