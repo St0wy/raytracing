@@ -1,4 +1,5 @@
 use crate::geometry::aabb::Aabb;
+use crate::geometry::aabb_box::AabbBox;
 use crate::geometry::bvh::BvhNode;
 use crate::geometry::moving_sphere::MovingSphere;
 use crate::geometry::sphere::Sphere;
@@ -72,6 +73,10 @@ impl<'a> HitRecord<'a> {
     pub fn v(&self) -> f32 {
         self.v
     }
+
+    pub fn t(&self) -> f32 {
+        self.t
+    }
 }
 
 pub trait Hittable {
@@ -86,6 +91,7 @@ pub enum HittableObjectType {
     XyRectangle,
     XzRectangle,
     YzRectangle,
+    AabbBox,
     BvhNode,
 }
 
@@ -107,6 +113,7 @@ pub struct HittableList {
     xy_rectangles: Vec<XyRectangle>,
     xz_rectangles: Vec<XzRectangle>,
     yz_rectangles: Vec<YzRectangle>,
+    aabb_boxes: Vec<AabbBox>,
     bvh_nodes: Vec<BvhNode>,
     first_node_index: usize,
 }
@@ -119,6 +126,7 @@ impl HittableList {
             xy_rectangles: Vec::new(),
             xz_rectangles: Vec::new(),
             yz_rectangles: Vec::new(),
+            aabb_boxes: Vec::new(),
             bvh_nodes: Vec::new(),
             first_node_index: 0,
         }
@@ -144,12 +152,17 @@ impl HittableList {
         self.yz_rectangles.push(rectangle);
     }
 
+    pub fn add_aabb_box(&mut self, aabb_box: AabbBox) {
+        self.aabb_boxes.push(aabb_box);
+    }
+
     pub fn len(&self) -> usize {
         self.spheres.len()
             + self.moving_spheres.len()
             + self.xy_rectangles.len()
             + self.xz_rectangles.len()
             + self.yz_rectangles.len()
+            + self.aabb_boxes.len()
     }
 
     pub fn clear(&mut self) {
@@ -158,6 +171,7 @@ impl HittableList {
         self.xy_rectangles.clear();
         self.xz_rectangles.clear();
         self.yz_rectangles.clear();
+        self.aabb_boxes.clear();
     }
 
     pub fn hit_no_limit(&self, ray: &Ray) -> Option<HitRecord> {
@@ -193,6 +207,9 @@ impl HittableList {
             HittableObjectType::YzRectangle => {
                 self.yz_rectangles[hittable_object_index.index].hit(ray, t_min, t_max)
             }
+            HittableObjectType::AabbBox => {
+                self.aabb_boxes[hittable_object_index.index].hit(ray, t_min, t_max)
+            }
         }
     }
 
@@ -221,11 +238,19 @@ impl HittableList {
             HittableObjectType::BvhNode => {
                 Some(self.bvh_nodes[hittable_object_index.index].aabb().clone())
             }
+            HittableObjectType::AabbBox => {
+                self.aabb_boxes[hittable_object_index.index].bounding_box(time0, time1)
+            }
         }
     }
 
     pub fn is_empty(&self) -> bool {
-        self.spheres.is_empty() && self.moving_spheres.is_empty()
+        self.spheres.is_empty()
+            && self.moving_spheres.is_empty()
+            && self.xy_rectangles.is_empty()
+            && self.xz_rectangles.is_empty()
+            && self.yz_rectangles.is_empty()
+            && self.aabb_boxes.is_empty()
     }
 
     fn hit_node(&self, node: &BvhNode, ray: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
@@ -313,32 +338,36 @@ impl HittableList {
     }
 
     pub fn init_bvh_nodes(&mut self) {
-        let mut hittable = Vec::new();
+        let mut hittables = Vec::new();
 
         for i in 0..self.spheres.len() {
-            hittable.push(HittableObjectIndex::new(HittableObjectType::Sphere, i))
+            hittables.push(HittableObjectIndex::new(HittableObjectType::Sphere, i))
         }
 
         for i in 0..self.moving_spheres.len() {
-            hittable.push(HittableObjectIndex::new(
+            hittables.push(HittableObjectIndex::new(
                 HittableObjectType::MovingSphere,
                 i,
             ))
         }
 
         for i in 0..self.xy_rectangles.len() {
-            hittable.push(HittableObjectIndex::new(HittableObjectType::XyRectangle, i));
+            hittables.push(HittableObjectIndex::new(HittableObjectType::XyRectangle, i));
         }
 
         for i in 0..self.xz_rectangles.len() {
-            hittable.push(HittableObjectIndex::new(HittableObjectType::XzRectangle, i));
+            hittables.push(HittableObjectIndex::new(HittableObjectType::XzRectangle, i));
         }
 
         for i in 0..self.yz_rectangles.len() {
-            hittable.push(HittableObjectIndex::new(HittableObjectType::YzRectangle, i));
+            hittables.push(HittableObjectIndex::new(HittableObjectType::YzRectangle, i));
         }
 
-        let node = self.create_node(&mut hittable[..], 0.0, 1.0);
+        for i in 0..self.aabb_boxes.len() {
+            hittables.push(HittableObjectIndex::new(HittableObjectType::AabbBox, i));
+        }
+
+        let node = self.create_node(&mut hittables[..], 0.0, 1.0);
         self.first_node_index = node.index;
     }
 }
@@ -385,16 +414,17 @@ impl Hittable for HittableList {
 
         let spheres_box = get_objects_bounding_box(&self.spheres, time0, time1);
         let moving_spheres_box = get_objects_bounding_box(&self.moving_spheres, time0, time1);
+        let xy_rectangles_box = get_objects_bounding_box(&self.xy_rectangles, time0, time1);
+        let xz_rectangles_box = get_objects_bounding_box(&self.xz_rectangles, time0, time1);
+        let yz_rectangles_box = get_objects_bounding_box(&self.yz_rectangles, time0, time1);
+        let aabb_box_box = get_objects_bounding_box(&self.aabb_boxes, time0, time1);
 
-        if spheres_box.is_none() {
-            return moving_spheres_box;
-        }
+        let a = Aabb::opt_surrounding_box(spheres_box, moving_spheres_box);
+        let b = Aabb::opt_surrounding_box(a, xy_rectangles_box);
+        let c = Aabb::opt_surrounding_box(b, xz_rectangles_box);
+        let d = Aabb::opt_surrounding_box(c, yz_rectangles_box);
 
-        if moving_spheres_box.is_none() {
-            return spheres_box;
-        }
-
-        Some(Aabb::surrounding_box(spheres_box?, moving_spheres_box?))
+        Aabb::opt_surrounding_box(d, aabb_box_box)
     }
 }
 

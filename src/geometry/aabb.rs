@@ -45,6 +45,18 @@ impl Aabb {
         true
     }
 
+    pub fn opt_surrounding_box(box0: Option<Self>, box1: Option<Self>) -> Option<Self> {
+        if box0.is_none() {
+            return box1;
+        }
+
+        if box1.is_none() {
+            return box0;
+        }
+
+        Some(Self::surrounding_box(box0?, box1?))
+    }
+
     pub fn surrounding_box(box0: Self, box1: Self) -> Self {
         let small = Vec3::new(
             box0.min().x.min(box1.min().x),

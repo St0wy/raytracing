@@ -1,5 +1,6 @@
 use crate::camera::Camera;
 use crate::consts::ASPECT_RATIO;
+use crate::geometry::aabb_box::AabbBox;
 use crate::geometry::hit::HittableList;
 use crate::geometry::moving_sphere::MovingSphere;
 use crate::geometry::sphere::Sphere;
@@ -170,7 +171,8 @@ impl Scene {
         let red = Material::new_lambertian_color(Color::new(0.65, 0.05, 0.05));
         let white = Material::new_lambertian_color(Color::new(0.73, 0.73, 0.73));
         let green = Material::new_lambertian_color(Color::new(0.12, 0.45, 0.15));
-        let light = Material::new_diffuse_light_color(Color::new(15.0, 15.0, 15.0));
+        let force = 15.0;
+        let light = Material::new_diffuse_light_color(Color::new(force, force, force));
 
         hittable_list.add_yz_rectangle(YzRectangle::new(
             green.clone(),
@@ -181,7 +183,15 @@ impl Scene {
             555.0,
         ));
         hittable_list.add_yz_rectangle(YzRectangle::new(red.clone(), 0.0, 555.0, 0.0, 555.0, 0.0));
-        hittable_list.add_xz_rectangle(XzRectangle::new(light, 213.0, 343.0, 227.0, 332.0, 554.0));
+        let size = 30.0;
+        hittable_list.add_xz_rectangle(XzRectangle::new(
+            light,
+            213.0 - size,
+            343.0 + size,
+            227.0 - size,
+            332.0 + size,
+            554.0,
+        ));
         hittable_list.add_xz_rectangle(XzRectangle::new(
             white.clone(),
             0.0,
@@ -206,13 +216,28 @@ impl Scene {
             555.0,
             555.0,
         ));
+        hittable_list.add_aabb_box(AabbBox::new(
+            Vec3::new(130.0, 0.0, 65.0),
+            Vec3::new(295.0, 165.0, 230.0),
+            white.clone(),
+        ));
+        hittable_list.add_aabb_box(AabbBox::new(
+            Vec3::new(265.0, 0.0, 295.0),
+            Vec3::new(430.0, 330.0, 460.0),
+            white.clone(),
+        ));
         hittable_list.init_bvh_nodes();
 
-        let camera = Camera::new_look_fov(
+        let mut camera = Camera::new(
             Vec3::new(278.0, 278.0, -800.0),
             Vec3::new(278.0, 278.0, 0.0),
+            Vec3::up(),
             40.0,
+            ASPECT_RATIO,
+            0.0,
+            10.0,
         );
+        camera.set_time(0.0, 1.0);
 
         Self::new(hittable_list, camera, Color::black())
     }
