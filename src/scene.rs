@@ -64,7 +64,7 @@ impl Scene {
 
     pub fn two_perlin_spheres() -> Self {
         let mut hittable_list = HittableList::new();
-        let perlin_texture = Texture::Noise(Perlin::new());
+        let perlin_texture = Texture::new_noise(Perlin::new(), 4.0);
 
         hittable_list.add_sphere(Sphere::new(
             Vec3::new(0.0, -1000.0, 0.0),

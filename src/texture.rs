@@ -9,7 +9,10 @@ pub enum Texture {
         odd: Box<Texture>,
         even: Box<Texture>,
     },
-    Noise(Perlin),
+    Noise {
+        noise: Perlin,
+        scale: f32,
+    },
 }
 
 impl Texture {
@@ -24,8 +27,8 @@ impl Texture {
         }
     }
 
-    pub fn new_noise(noise: Perlin) -> Self {
-        Texture::Noise(noise)
+    pub fn new_noise(noise: Perlin, scale: f32) -> Self {
+        Texture::Noise { noise, scale }
     }
 
     pub fn value(&self, u: f32, v: f32, p: &Vec3) -> Color {
@@ -39,7 +42,11 @@ impl Texture {
                     even.value(u, v, p)
                 }
             }
-            Texture::Noise(noise) => Color::white() * noise.noise(p),
+            Texture::Noise { noise, scale } => {
+                Color::white()
+                    * 0.5
+                    * (1.0 + f32::sin(scale * p.z + 10.0 * noise.turbulence(*p, None)))
+            }
         }
     }
 }

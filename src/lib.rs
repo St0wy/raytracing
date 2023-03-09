@@ -30,8 +30,10 @@ pub fn run_big_scene() {
         println!("You are rendering this scene in debug, which is very slow. Make sure you don't want to run it in release mode.")
     }
 
+    println!("Starting ray tracing...");
     let start = Instant::now();
-    let pixels = render_no_bar_multithreaded(&Scene::two_perlin_spheres(), IMAGE_WIDTH, IMAGE_HEIGHT);
+    let pixels =
+        render_no_bar_multithreaded(&Scene::two_perlin_spheres(), IMAGE_WIDTH, IMAGE_HEIGHT);
     println!(
         "Raytracing finished in {}",
         start.elapsed().to_human_time_string()
