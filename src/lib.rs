@@ -10,16 +10,10 @@ pub mod texture;
 
 use consts::*;
 use human_time::ToHumanTimeString;
-use math::vec3::*;
 use std::io::BufWriter;
 use std::path::Path;
 use std::{fs::File, time::Instant};
 
-use crate::camera::Camera;
-use crate::geometry::hit::HittableList;
-use crate::geometry::sphere::Sphere;
-use crate::material::Material;
-use crate::math::color::Color;
 use crate::renderer::{render_no_bar, render_no_bar_multithreaded};
 use crate::scene::Scene;
 
@@ -32,7 +26,7 @@ pub fn run_big_scene() {
 
     println!("Starting ray tracing...");
     let start = Instant::now();
-    let pixels = render_no_bar_multithreaded(&Scene::earth(), IMAGE_WIDTH, IMAGE_HEIGHT);
+    let pixels = render_no_bar_multithreaded(&Scene::cornell_box(), IMAGE_WIDTH, IMAGE_HEIGHT);
     println!(
         "Raytracing finished in {}",
         start.elapsed().to_human_time_string()
@@ -42,17 +36,7 @@ pub fn run_big_scene() {
 }
 
 pub fn run_same_as_bench() {
-    let mut world = HittableList::new();
-
-    let material = Material::new_dielectric(1.5);
-    world.add_sphere(Sphere::new(Vec3::new(4.0, 1.0, 0.0), 1.0, material));
-    let material = Material::new_metal(Color::new(0.7, 0.6, 0.5), 0.0);
-    world.add_sphere(Sphere::new(Vec3::new(0.0, 1.0, 0.0), 1.0, material));
-    let material = Material::new_lambertian_color(Color::new(0.4, 0.2, 0.1));
-    world.add_sphere(Sphere::new(Vec3::new(-4.0, 1.0, 0.0), 1.0, material));
-
-    let camera = Camera::default();
-    let scene = Scene::new(world, camera);
+    let scene = Scene::bench();
 
     let start = Instant::now();
 

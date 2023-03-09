@@ -20,11 +20,12 @@ impl ScatterResult {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum Material {
     Lambertian { albedo: Texture },
     Metal { albedo: Color, fuzz: f32 },
     Dielectric { refraction_index: f32 },
+    DiffuseLight { emit: Texture },
 }
 
 impl Material {
@@ -47,6 +48,16 @@ impl Material {
         Self::Dielectric { refraction_index }
     }
 
+    pub fn new_diffuse_light(emit: Texture) -> Self {
+        Self::DiffuseLight { emit }
+    }
+
+    pub fn new_diffuse_light_color(color: Color) -> Self {
+        Self::DiffuseLight {
+            emit: Texture::new_solid_color(color),
+        }
+    }
+
     pub fn scatter(&self, ray_in: &Ray, record: &HitRecord) -> Option<ScatterResult> {
         match self {
             Material::Lambertian { albedo } => scatter_lambertian(albedo, ray_in, record),
@@ -54,6 +65,14 @@ impl Material {
             Material::Dielectric { refraction_index } => {
                 scatter_dielectrics(*refraction_index, ray_in, record)
             }
+            Material::DiffuseLight { emit: _ } => None,
+        }
+    }
+
+    pub fn emit(&self, u: f32, v: f32, point: &Vec3) -> Color {
+        match self {
+            Self::DiffuseLight { emit } => emit.value(u, v, point),
+            _ => Color::black(),
         }
     }
 }

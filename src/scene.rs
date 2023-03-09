@@ -1,7 +1,11 @@
 use crate::camera::Camera;
+use crate::consts::ASPECT_RATIO;
 use crate::geometry::hit::HittableList;
 use crate::geometry::moving_sphere::MovingSphere;
 use crate::geometry::sphere::Sphere;
+use crate::geometry::xy_rectangle::XyRectangle;
+use crate::geometry::xz_rectangle::XzRectangle;
+use crate::geometry::yz_rectangle::YzRectangle;
 use crate::material::Material;
 use crate::math::color::Color;
 use crate::math::perlin::Perlin;
@@ -12,20 +16,36 @@ use rand::{Rng, SeedableRng};
 pub struct Scene {
     hittable_list: HittableList,
     camera: Camera,
+    background_color: Color,
 }
 
 impl Scene {
-    pub fn new(hittable_list: HittableList, camera: Camera) -> Self {
+    pub fn new(hittable_list: HittableList, camera: Camera, background_color: Color) -> Self {
         Self {
             hittable_list,
             camera,
+            background_color,
         }
+    }
+
+    pub fn bench() -> Self {
+        let mut world = HittableList::new();
+
+        let material = Material::new_dielectric(1.5);
+        world.add_sphere(Sphere::new(Vec3::new(4.0, 1.0, 0.0), 1.0, material));
+        let material = Material::new_metal(Color::new(0.7, 0.6, 0.5), 0.0);
+        world.add_sphere(Sphere::new(Vec3::new(0.0, 1.0, 0.0), 1.0, material));
+        let material = Material::new_lambertian_color(Color::new(0.4, 0.2, 0.1));
+        world.add_sphere(Sphere::new(Vec3::new(-4.0, 1.0, 0.0), 1.0, material));
+
+        Self::new(world, Camera::default(), Color::new(0.70, 0.80, 1.00))
     }
 
     pub fn random() -> Self {
         Self {
             hittable_list: random_hittable_list(),
             camera: Camera::default(),
+            background_color: Color::new(0.70, 0.80, 1.00),
         }
     }
 
@@ -33,6 +53,7 @@ impl Scene {
         Self {
             hittable_list: fixed_big_scene(),
             camera: Camera::default(),
+            background_color: Color::new(0.70, 0.80, 1.00),
         }
     }
 
@@ -54,11 +75,12 @@ impl Scene {
             Material::new_lambertian(checker),
         ));
 
-        hittable_list.init_bvh_nodes(0.0, 1.0);
+        hittable_list.init_bvh_nodes();
 
         Self {
             hittable_list,
             camera: Camera::default(),
+            background_color: Color::new(0.70, 0.80, 1.00),
         }
     }
 
@@ -77,11 +99,12 @@ impl Scene {
             Material::new_lambertian(perlin_texture),
         ));
 
-        hittable_list.init_bvh_nodes(0.0, 1.0);
+        hittable_list.init_bvh_nodes();
 
         Self {
             hittable_list,
             camera: Camera::default(),
+            background_color: Color::new(0.70, 0.80, 1.00),
         }
     }
 
@@ -92,12 +115,106 @@ impl Scene {
         let earth_surface = Material::new_lambertian(earth_texture);
         let globe = Sphere::new(Vec3::new(0.0, 0.0, 0.0), 2.0, earth_surface);
         hittable_list.add_sphere(globe);
-        hittable_list.init_bvh_nodes(0.0, 1.0);
+        hittable_list.init_bvh_nodes();
 
         Self {
             hittable_list,
             camera: Camera::default(),
+            background_color: Color::new(0.70, 0.80, 1.00),
         }
+    }
+
+    pub fn simple_light() -> Self {
+        let mut hittable_list = HittableList::new();
+
+        let perlin_texture = Texture::new_noise(Perlin::new(), 4.0);
+        let ground = Sphere::new(
+            Vec3::new(0.0, -1000.0, 0.0),
+            1000.0,
+            Material::new_lambertian(perlin_texture.clone()),
+        );
+        hittable_list.add_sphere(ground);
+
+        let sphere = Sphere::new(
+            Vec3::new(0.0, 2.0, 0.0),
+            2.0,
+            Material::new_lambertian(perlin_texture),
+        );
+        hittable_list.add_sphere(sphere);
+
+        let diffuse_light = Material::new_diffuse_light_color(Color::new(4.0, 4.0, 4.0));
+        hittable_list.add_xy_rectangle(XyRectangle::new(diffuse_light, 3.0, 5.0, 1.0, 3.0, -2.0));
+
+        hittable_list.init_bvh_nodes();
+
+        let mut camera = Camera::new(
+            Vec3::new(26.0, 3.0, 6.0),
+            Vec3::new(0.0, 0.0, 0.0),
+            Vec3::up(),
+            20.0,
+            ASPECT_RATIO,
+            0.0,
+            10.0,
+        );
+        camera.set_time(0.0, 1.0);
+
+        Self {
+            hittable_list,
+            camera,
+            background_color: Color::black(),
+        }
+    }
+
+    pub fn cornell_box() -> Self {
+        let mut hittable_list = HittableList::new();
+        let red = Material::new_lambertian_color(Color::new(0.65, 0.05, 0.05));
+        let white = Material::new_lambertian_color(Color::new(0.73, 0.73, 0.73));
+        let green = Material::new_lambertian_color(Color::new(0.12, 0.45, 0.15));
+        let light = Material::new_diffuse_light_color(Color::new(15.0, 15.0, 15.0));
+
+        hittable_list.add_yz_rectangle(YzRectangle::new(
+            green.clone(),
+            0.0,
+            555.0,
+            0.0,
+            555.0,
+            555.0,
+        ));
+        hittable_list.add_yz_rectangle(YzRectangle::new(red.clone(), 0.0, 555.0, 0.0, 555.0, 0.0));
+        hittable_list.add_xz_rectangle(XzRectangle::new(light, 213.0, 343.0, 227.0, 332.0, 554.0));
+        hittable_list.add_xz_rectangle(XzRectangle::new(
+            white.clone(),
+            0.0,
+            555.0,
+            0.0,
+            555.0,
+            0.0,
+        ));
+        hittable_list.add_xz_rectangle(XzRectangle::new(
+            white.clone(),
+            0.0,
+            555.0,
+            0.0,
+            555.0,
+            555.0,
+        ));
+        hittable_list.add_xy_rectangle(XyRectangle::new(
+            white.clone(),
+            0.0,
+            555.0,
+            0.0,
+            555.0,
+            555.0,
+        ));
+        hittable_list.init_bvh_nodes();
+
+        let camera = Camera::new_look_fov(
+            Vec3::new(278.0, 278.0, -800.0),
+            Vec3::new(278.0, 278.0, 0.0),
+            40.0,
+        );
+
+        Self::new(hittable_list, camera, Color::black())
     }
 
     pub fn hittable_list(&self) -> &HittableList {
@@ -106,6 +223,10 @@ impl Scene {
 
     pub fn camera(&self) -> &Camera {
         &self.camera
+    }
+
+    pub fn background_color(&self) -> &Color {
+        &self.background_color
     }
 
     pub fn set_hittable_list(&mut self, hittable_list: HittableList) {
@@ -185,7 +306,7 @@ fn fixed_big_scene() -> HittableList {
     let material = Material::new_metal(Color::new(0.7, 0.6, 0.5), 0.0);
     world.add_sphere(Sphere::new(Vec3::new(4.0, 1.0, 0.0), 1.0, material));
 
-    world.init_bvh_nodes(0.0, 1.0);
+    world.init_bvh_nodes();
 
     world
 }
@@ -253,7 +374,7 @@ fn random_hittable_list() -> HittableList {
     let material = Material::new_metal(Color::new(0.7, 0.6, 0.5), 0.0);
     world.add_sphere(Sphere::new(Vec3::new(4.0, 1.0, 0.0), 1.0, material));
 
-    world.init_bvh_nodes(0.0, 1.0);
+    world.init_bvh_nodes();
 
     world
 }

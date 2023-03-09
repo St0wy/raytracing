@@ -50,6 +50,28 @@ impl Camera {
         }
     }
 
+    pub fn new_look(look_from: Vec3, look_at: Vec3) -> Self {
+        let mut cam = Self::new(
+            look_from,
+            look_at,
+            Vec3::up(),
+            20.0,
+            ASPECT_RATIO,
+            0.1,
+            10.0,
+        );
+        cam.set_time(0.0, 1.0);
+
+        cam
+    }
+
+    pub fn new_look_fov(look_from: Vec3, look_at: Vec3, fov: f32) -> Self {
+        let mut cam = Self::new(look_from, look_at, Vec3::up(), fov, ASPECT_RATIO, 0.1, 10.0);
+        cam.set_time(0.0, 1.0);
+
+        cam
+    }
+
     pub fn get_ray(&self, s: f32, t: f32) -> Ray {
         let rd = self.lens_radius * Vec3::random_in_unit_circle();
         let offset = self.u * rd.x + self.v * rd.y;

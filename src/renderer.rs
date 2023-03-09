@@ -1,4 +1,4 @@
-use indicatif::{ParallelProgressIterator, ProgressBar, ProgressStyle};
+use indicatif::{ProgressBar, ProgressStyle};
 use rand::Rng;
 use rayon::prelude::*;
 
@@ -17,22 +17,41 @@ use crate::scene::Scene;
 /// * `depth`: Number of iterations left.
 ///
 /// returns: Vec3
-fn ray_color(ray: &Ray, hittable_list: &HittableList, depth: u32) -> Color {
+fn ray_color(
+    ray: &Ray,
+    background_color: &Color,
+    hittable_list: &HittableList,
+    depth: u32,
+) -> Color {
     if depth == 0 {
         return Color::black();
     }
 
-    if let Some(record) = hittable_list.hit_no_limit(ray) {
-        return if let Some(result) = record.material().scatter(ray, &record) {
-            result.attenuation * ray_color(&result.scattered, hittable_list, depth - 1)
-        } else {
-            Color::black()
-        };
-    }
+    let record = hittable_list.hit_no_limit(ray);
 
-    let unit_direction = ray.direction().to_unit();
-    let t = 0.5 * (unit_direction.y + 1.0);
-    (1.0 - t) * Color::white() + t * Color::new(0.5, 0.7, 1.0)
+    if record.is_none() {
+        return *background_color;
+    }
+    let record = record.unwrap();
+
+    let emitted = record
+        .material()
+        .emit(record.u(), record.v(), record.point());
+
+    let scatter = record.material().scatter(ray, &record);
+    if scatter.is_none() {
+        return emitted;
+    }
+    let scatter_result = scatter.unwrap();
+
+    let ray_color = ray_color(
+        &scatter_result.scattered,
+        background_color,
+        hittable_list,
+        depth - 1,
+    );
+
+    emitted + scatter_result.attenuation * ray_color
 }
 
 /// Writes the color to the pixels vector.
@@ -74,7 +93,12 @@ pub fn render_single_core(scene: &Scene, image_width: usize, image_height: usize
                 let v = (j as f32 + rng.gen::<f32>()) / (image_height as f32 - 1.0);
                 let ray = scene.camera().get_ray(u, v);
 
-                pixel_color += ray_color(&ray, scene.hittable_list(), MAX_DEPTH);
+                pixel_color += ray_color(
+                    &ray,
+                    scene.background_color(),
+                    scene.hittable_list(),
+                    MAX_DEPTH,
+                );
             }
 
             // Increment the loading bar (not all the time to save perf)
@@ -104,7 +128,12 @@ pub fn render_no_bar(scene: &Scene, image_width: usize, image_height: usize) -> 
                 let v = (j as f32 + rng.gen::<f32>()) / (image_height as f32 - 1.0);
                 let ray = scene.camera().get_ray(u, v);
 
-                pixel_color += ray_color(&ray, scene.hittable_list(), MAX_DEPTH);
+                pixel_color += ray_color(
+                    &ray,
+                    scene.background_color(),
+                    scene.hittable_list(),
+                    MAX_DEPTH,
+                );
             }
 
             write_color(&mut pixels, pixel_color);
@@ -133,52 +162,12 @@ pub fn render_no_bar_multithreaded(
                         let v = (j as f32 + rng.gen::<f32>()) / (image_height as f32 - 1.0);
                         let ray = scene.camera().get_ray(u, v);
 
-                        pixel_color += ray_color(&ray, scene.hittable_list(), MAX_DEPTH);
-                    }
-
-                    const SCALE: f32 = 1.0 / SAMPLES_PER_PIXEL as f32;
-                    (0..3)
-                        .into_iter()
-                        .map(|k| {
-                            (256.0 * (pixel_color[k as usize] * SCALE).sqrt().clamp(0.0, 0.999))
-                                as u8
-                        })
-                        .collect::<Vec<u8>>()
-                })
-                .collect::<Vec<u8>>()
-        })
-        .collect::<Vec<u8>>();
-
-    return pixels;
-}
-
-pub fn render_bar_multithreaded(scene: &Scene, image_width: usize, image_height: usize) -> Vec<u8> {
-    let bar = ProgressBar::new(((image_width * image_height) / 256) as u64);
-    bar.set_prefix("🎨  Rendering");
-    bar.set_style(
-        ProgressStyle::default_bar()
-            .template(
-                "{prefix:.white} [{eta_precise}] {bar:40.cyan/blue} {pos:>7}/{len:} scanlines",
-            )
-            .unwrap(),
-    );
-
-    let pixels: Vec<u8> = (0..image_height)
-        .into_par_iter()
-        .rev()
-        .progress_with(bar)
-        .flat_map(|j| {
-            (0..image_width)
-                .into_par_iter()
-                .flat_map(|i| {
-                    let mut pixel_color = Color::black();
-                    for _ in 0..SAMPLES_PER_PIXEL {
-                        let mut rng = rand::thread_rng();
-                        let u = (i as f32 + rng.gen::<f32>()) / (image_width as f32 - 1.0);
-                        let v = (j as f32 + rng.gen::<f32>()) / (image_height as f32 - 1.0);
-                        let ray = scene.camera().get_ray(u, v);
-
-                        pixel_color += ray_color(&ray, scene.hittable_list(), MAX_DEPTH);
+                        pixel_color += ray_color(
+                            &ray,
+                            scene.background_color(),
+                            scene.hittable_list(),
+                            MAX_DEPTH,
+                        );
                     }
 
                     const SCALE: f32 = 1.0 / SAMPLES_PER_PIXEL as f32;

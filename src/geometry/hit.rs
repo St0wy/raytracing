@@ -2,6 +2,9 @@ use crate::geometry::aabb::Aabb;
 use crate::geometry::bvh::BvhNode;
 use crate::geometry::moving_sphere::MovingSphere;
 use crate::geometry::sphere::Sphere;
+use crate::geometry::xy_rectangle::XyRectangle;
+use crate::geometry::xz_rectangle::XzRectangle;
+use crate::geometry::yz_rectangle::YzRectangle;
 use crate::material::Material;
 use crate::{math::vec3::*, ray::Ray};
 use rand::Rng;
@@ -80,6 +83,9 @@ pub trait Hittable {
 pub enum HittableObjectType {
     Sphere,
     MovingSphere,
+    XyRectangle,
+    XzRectangle,
+    YzRectangle,
     BvhNode,
 }
 
@@ -98,6 +104,9 @@ impl HittableObjectIndex {
 pub struct HittableList {
     spheres: Vec<Sphere>,
     moving_spheres: Vec<MovingSphere>,
+    xy_rectangles: Vec<XyRectangle>,
+    xz_rectangles: Vec<XzRectangle>,
+    yz_rectangles: Vec<YzRectangle>,
     bvh_nodes: Vec<BvhNode>,
     first_node_index: usize,
 }
@@ -107,6 +116,9 @@ impl HittableList {
         Self {
             spheres: Vec::new(),
             moving_spheres: Vec::new(),
+            xy_rectangles: Vec::new(),
+            xz_rectangles: Vec::new(),
+            yz_rectangles: Vec::new(),
             bvh_nodes: Vec::new(),
             first_node_index: 0,
         }
@@ -120,12 +132,32 @@ impl HittableList {
         self.moving_spheres.push(moving_sphere);
     }
 
+    pub fn add_xy_rectangle(&mut self, rectangle: XyRectangle) {
+        self.xy_rectangles.push(rectangle);
+    }
+
+    pub fn add_xz_rectangle(&mut self, rectangle: XzRectangle) {
+        self.xz_rectangles.push(rectangle);
+    }
+
+    pub fn add_yz_rectangle(&mut self, rectangle: YzRectangle) {
+        self.yz_rectangles.push(rectangle);
+    }
+
     pub fn len(&self) -> usize {
-        self.spheres.len() + self.moving_spheres.len()
+        self.spheres.len()
+            + self.moving_spheres.len()
+            + self.xy_rectangles.len()
+            + self.xz_rectangles.len()
+            + self.yz_rectangles.len()
     }
 
     pub fn clear(&mut self) {
         self.spheres.clear();
+        self.moving_spheres.clear();
+        self.xy_rectangles.clear();
+        self.xz_rectangles.clear();
+        self.yz_rectangles.clear();
     }
 
     pub fn hit_no_limit(&self, ray: &Ray) -> Option<HitRecord> {
@@ -152,6 +184,15 @@ impl HittableList {
             HittableObjectType::MovingSphere => {
                 self.moving_spheres[hittable_object_index.index].hit(ray, t_min, t_max)
             }
+            HittableObjectType::XyRectangle => {
+                self.xy_rectangles[hittable_object_index.index].hit(ray, t_min, t_max)
+            }
+            HittableObjectType::XzRectangle => {
+                self.xz_rectangles[hittable_object_index.index].hit(ray, t_min, t_max)
+            }
+            HittableObjectType::YzRectangle => {
+                self.yz_rectangles[hittable_object_index.index].hit(ray, t_min, t_max)
+            }
         }
     }
 
@@ -167,6 +208,15 @@ impl HittableList {
             }
             HittableObjectType::MovingSphere => {
                 self.moving_spheres[hittable_object_index.index].bounding_box(time0, time1)
+            }
+            HittableObjectType::XyRectangle => {
+                self.xy_rectangles[hittable_object_index.index].bounding_box(time0, time1)
+            }
+            HittableObjectType::XzRectangle => {
+                self.xz_rectangles[hittable_object_index.index].bounding_box(time0, time1)
+            }
+            HittableObjectType::YzRectangle => {
+                self.yz_rectangles[hittable_object_index.index].bounding_box(time0, time1)
             }
             HittableObjectType::BvhNode => {
                 Some(self.bvh_nodes[hittable_object_index.index].aabb().clone())
@@ -262,7 +312,7 @@ impl HittableList {
         HittableObjectIndex::new(HittableObjectType::BvhNode, self.bvh_nodes.len() - 1)
     }
 
-    pub fn init_bvh_nodes(&mut self, time0: f32, time1: f32) {
+    pub fn init_bvh_nodes(&mut self) {
         let mut hittable = Vec::new();
 
         for i in 0..self.spheres.len() {
@@ -276,7 +326,19 @@ impl HittableList {
             ))
         }
 
-        let node = self.create_node(&mut hittable[..], time0, time1);
+        for i in 0..self.xy_rectangles.len() {
+            hittable.push(HittableObjectIndex::new(HittableObjectType::XyRectangle, i));
+        }
+
+        for i in 0..self.xz_rectangles.len() {
+            hittable.push(HittableObjectIndex::new(HittableObjectType::XzRectangle, i));
+        }
+
+        for i in 0..self.yz_rectangles.len() {
+            hittable.push(HittableObjectIndex::new(HittableObjectType::YzRectangle, i));
+        }
+
+        let node = self.create_node(&mut hittable[..], 0.0, 1.0);
         self.first_node_index = node.index;
     }
 }
