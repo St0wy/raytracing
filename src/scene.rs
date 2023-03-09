@@ -85,6 +85,21 @@ impl Scene {
         }
     }
 
+    pub fn earth() -> Self {
+        let mut hittable_list = HittableList::new();
+        let earth_texture =
+            Texture::new_image("earthmap.png".to_string()).expect("Failed to load image texture");
+        let earth_surface = Material::new_lambertian(earth_texture);
+        let globe = Sphere::new(Vec3::new(0.0, 0.0, 0.0), 2.0, earth_surface);
+        hittable_list.add_sphere(globe);
+        hittable_list.init_bvh_nodes(0.0, 1.0);
+
+        Self {
+            hittable_list,
+            camera: Camera::default(),
+        }
+    }
+
     pub fn hittable_list(&self) -> &HittableList {
         &self.hittable_list
     }
