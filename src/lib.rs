@@ -13,6 +13,7 @@ use human_time::ToHumanTimeString;
 use std::io::BufWriter;
 use std::path::Path;
 use std::{fs::File, time::Instant};
+use tracy::zone;
 
 use crate::renderer::{render_no_bar, render_no_bar_multithreaded};
 use crate::scene::Scene;
@@ -20,6 +21,7 @@ use crate::scene::Scene;
 const FILE_DEFAULT_PATH: &str = "out.png";
 
 pub fn run_big_scene() {
+    zone!();
     if cfg!(debug_assertions) {
         println!("You are rendering this scene in debug, which is very slow. Make sure you don't want to run it in release mode.")
     }
@@ -51,6 +53,7 @@ pub fn run_same_as_bench() {
 }
 
 fn write_image(pixels: &Vec<u8>, path: &Path) {
+    zone!();
     println!("Writing image...");
 
     let file = File::create(path).unwrap();

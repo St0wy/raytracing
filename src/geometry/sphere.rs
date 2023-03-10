@@ -2,6 +2,7 @@ use crate::geometry::aabb::Aabb;
 use crate::material::Material;
 use crate::{math::vec3::*, ray::Ray};
 use std::f32::consts::PI;
+use tracy::zone;
 
 use super::hit::{HitRecord, Hittable};
 
@@ -30,6 +31,7 @@ impl Sphere {
 
 impl Hittable for Sphere {
     fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
+        zone!();
         let oc = ray.origin() - self.center;
         let direction = ray.direction();
         let a = direction.squared_magnitude();

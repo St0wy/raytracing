@@ -1,3 +1,4 @@
+use tracy::zone;
 use crate::geometry::aabb::Aabb;
 use crate::geometry::hit::{HitRecord, Hittable};
 use crate::material::Material;
@@ -28,6 +29,7 @@ impl XzRectangle {
 
 impl Hittable for XzRectangle {
     fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
+        zone!();
         let t = (self.k - ray.origin().y) / ray.direction().y;
         if t < t_min || t > t_max {
             return None;

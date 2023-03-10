@@ -13,6 +13,7 @@ use crate::math::perlin::Perlin;
 use crate::math::vec3::Vec3;
 use crate::texture::Texture;
 use rand::{Rng, SeedableRng};
+use tracy::zone;
 
 pub struct Scene {
     hittable_list: HittableList,
@@ -167,6 +168,7 @@ impl Scene {
     }
 
     pub fn cornell_box() -> Self {
+        zone!();
         let mut hittable_list = HittableList::new();
         let red = Material::new_lambertian_color(Color::new(0.65, 0.05, 0.05));
         let white = Material::new_lambertian_color(Color::new(0.73, 0.73, 0.73));

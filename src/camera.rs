@@ -2,6 +2,7 @@ use crate::consts::ASPECT_RATIO;
 use crate::math::utils::degrees_to_radians;
 use crate::{math::vec3::*, ray::Ray};
 use rand::Rng;
+use tracy::zone;
 
 pub struct Camera {
     origin: Vec3,
@@ -73,6 +74,7 @@ impl Camera {
     }
 
     pub fn get_ray(&self, s: f32, t: f32) -> Ray {
+        zone!();
         let rd = self.lens_radius * Vec3::random_in_unit_circle();
         let offset = self.u * rd.x + self.v * rd.y;
 

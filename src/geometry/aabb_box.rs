@@ -1,3 +1,4 @@
+use tracy::zone;
 use crate::geometry::aabb::Aabb;
 use crate::geometry::hit::{HitRecord, Hittable};
 use crate::geometry::xy_rectangle::XyRectangle;
@@ -80,6 +81,7 @@ impl AabbBox {
 
 impl Hittable for AabbBox {
     fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
+        zone!();
         let mut record_option: Option<HitRecord> = None;
         let mut closest_distance = t_max;
 

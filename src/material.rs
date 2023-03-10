@@ -4,6 +4,7 @@ use crate::math::vec3::Vec3;
 use crate::ray::Ray;
 use crate::texture::Texture;
 use rand::Rng;
+use tracy::zone;
 
 #[derive(Default)]
 pub struct ScatterResult {
@@ -59,6 +60,7 @@ impl Material {
     }
 
     pub fn scatter(&self, ray_in: &Ray, record: &HitRecord) -> Option<ScatterResult> {
+        zone!();
         match self {
             Material::Lambertian { albedo } => scatter_lambertian(albedo, ray_in, record),
             Material::Metal { albedo, fuzz } => scatter_metal(albedo, *fuzz, ray_in, record),
@@ -70,6 +72,7 @@ impl Material {
     }
 
     pub fn emit(&self, u: f32, v: f32, point: &Vec3) -> Color {
+        zone!();
         match self {
             Self::DiffuseLight { emit } => emit.value(u, v, point),
             _ => Color::black(),

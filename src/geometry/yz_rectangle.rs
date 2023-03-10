@@ -3,6 +3,7 @@ use crate::geometry::hit::{HitRecord, Hittable};
 use crate::material::Material;
 use crate::math::vec3::Vec3;
 use crate::ray::Ray;
+use tracy::zone;
 
 pub struct YzRectangle {
     material: Material,
@@ -28,6 +29,7 @@ impl YzRectangle {
 
 impl Hittable for YzRectangle {
     fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
+        zone!();
         let t = (self.k - ray.origin().x) / ray.direction().x;
         if t < t_min || t > t_max {
             return None;

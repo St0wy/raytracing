@@ -10,6 +10,7 @@ use crate::material::Material;
 use crate::{math::vec3::*, ray::Ray};
 use rand::Rng;
 use std::cmp::Ordering;
+use tracy::zone;
 
 #[derive(Debug)]
 pub struct HitRecord<'a> {
@@ -185,6 +186,7 @@ impl HittableList {
         t_min: f32,
         t_max: f32,
     ) -> Option<HitRecord> {
+        zone!();
         match hittable_object_index.object_type {
             HittableObjectType::BvhNode => self.hit_node(
                 &self.bvh_nodes[hittable_object_index.index],
@@ -254,6 +256,7 @@ impl HittableList {
     }
 
     fn hit_node(&self, node: &BvhNode, ray: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
+        zone!();
         if !node.aabb().hit(ray, t_min, t_max) {
             return None;
         }
@@ -398,6 +401,7 @@ fn get_objects_bounding_box<T: Hittable>(items: &Vec<T>, time0: f32, time1: f32)
 
 impl Hittable for HittableList {
     fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
+        zone!();
         let first = self.bvh_nodes.get(self.first_node_index);
 
         if first.is_none() {
@@ -445,6 +449,7 @@ mod tests {
             Material::new_dielectric(0.0),
         );
         hittable_list.add_sphere(sphere);
+        hittable_list.init_bvh_nodes();
 
         let ray = Ray::new(Vec3::zero(), Vec3::forward());
         let result = hittable_list.hit_no_limit(&ray);

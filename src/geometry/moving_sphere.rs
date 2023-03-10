@@ -1,3 +1,4 @@
+use tracy::zone;
 use crate::geometry::aabb::Aabb;
 use crate::geometry::sphere::Sphere;
 use crate::material::Material;
@@ -16,6 +17,7 @@ pub struct MovingSphere {
 
 impl Hittable for MovingSphere {
     fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
+        zone!();
         let center = self.center(ray.time);
         let oc = ray.origin() - center;
         let direction = ray.direction();

@@ -1,3 +1,4 @@
+use tracy::zone;
 use crate::math::vec3::Vec3;
 use crate::ray::Ray;
 
@@ -25,6 +26,7 @@ impl Aabb {
     }
 
     pub fn hit(&self, ray: &Ray, mut t_min: f32, mut t_max: f32) -> bool {
+        zone!();
         for i in 0..3 {
             let inverse_direction = 1.0 / ray.direction()[i];
             let mut t0 = (self.min()[i] - ray.origin()[i]) * inverse_direction;

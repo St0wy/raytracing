@@ -2,6 +2,7 @@ use crate::math::color::Color;
 use crate::math::perlin::Perlin;
 use crate::math::vec3::Vec3;
 use std::fs::File;
+use tracy::zone;
 
 const BYTES_PER_PIXEL: usize = 3;
 
@@ -41,6 +42,7 @@ impl Texture {
     }
 
     pub fn new_image(filename: String) -> Option<Self> {
+        zone!();
         let file = File::open(filename);
         if let Err(err) = file {
             eprintln!("Could not open texture image : {err}");
@@ -74,6 +76,7 @@ impl Texture {
     }
 
     pub fn value(&self, u: f32, v: f32, p: &Vec3) -> Color {
+        zone!();
         match self {
             Texture::SolidColor(color) => *color,
             Texture::Checker { odd, even } => {
@@ -107,6 +110,7 @@ fn get_texture_image_value(
     height: usize,
     bytes_per_scanline: usize,
 ) -> Color {
+    zone!();
     if data.is_empty() {
         return Color::new(0.0, 1.0, 1.0);
     }

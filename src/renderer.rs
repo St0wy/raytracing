@@ -1,6 +1,7 @@
 use indicatif::{ProgressBar, ProgressStyle};
 use rand::Rng;
 use rayon::prelude::*;
+use tracy::zone;
 
 use crate::consts::{MAX_DEPTH, SAMPLES_PER_PIXEL};
 use crate::geometry::hit::HittableList;
@@ -23,6 +24,7 @@ fn ray_color(
     hittable_list: &HittableList,
     depth: u32,
 ) -> Color {
+    zone!();
     if depth == 0 {
         return Color::black();
     }
@@ -148,6 +150,7 @@ pub fn render_no_bar_multithreaded(
     image_width: usize,
     image_height: usize,
 ) -> Vec<u8> {
+    zone!();
     let pixels: Vec<u8> = (0..image_height)
         .into_par_iter()
         .rev()
@@ -155,6 +158,7 @@ pub fn render_no_bar_multithreaded(
             (0..image_width)
                 .into_par_iter()
                 .flat_map(|i| {
+                    zone!();
                     let mut pixel_color = Color::black();
                     for _ in 0..SAMPLES_PER_PIXEL {
                         let mut rng = rand::thread_rng();
