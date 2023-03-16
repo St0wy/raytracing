@@ -14,7 +14,7 @@ rayon = "1.6.1"
 [dependencies.tracy]
 package = "tracy_full"
 version = "1.4.0"
-features = ["enable", "unstable"]
+#features = ["enable", "unstable"]
 
 [dev-dependencies]
 criterion = "0.4"

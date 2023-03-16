@@ -1,7 +1,7 @@
 use rand::distributions::Distribution;
 use rand::distributions::Uniform;
 use rand::Rng;
-use std::ops::{Add, AddAssign, Index, Mul, Range};
+use std::ops::{Add, AddAssign, Index, Mul, MulAssign, Range};
 
 #[derive(Default, Debug, Copy, Clone)]
 pub struct Color {
@@ -44,6 +44,10 @@ impl Color {
             between.sample(rng),
             between.sample(rng),
         )
+    }
+
+    pub fn dot(&self, other: &Self) -> f32 {
+        self.x * other.x + self.y * other.y + self.z * other.z
     }
 
     pub const fn black() -> Self {
@@ -119,5 +123,21 @@ impl Index<usize> for Color {
             2 => &self.z,
             _ => panic!("Out of color bounds !"),
         }
+    }
+}
+
+impl MulAssign<f32> for Color {
+    fn mul_assign(&mut self, rhs: f32) {
+        self.x *= rhs;
+        self.y *= rhs;
+        self.z *= rhs;
+    }
+}
+
+impl MulAssign<Color> for Color {
+    fn mul_assign(&mut self, rhs: Color) {
+        self.x *= rhs.x;
+        self.y *= rhs.y;
+        self.z *= rhs.z;
     }
 }
