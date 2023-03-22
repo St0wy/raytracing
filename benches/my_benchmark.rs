@@ -2,7 +2,6 @@ use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use raytracing::consts::*;
 use raytracing::renderer::render_no_bar_multithreaded;
 use raytracing::scene::Scene;
-use std::time::Duration;
 
 fn bench_three_spheres(c: &mut Criterion) {
     let scene = Scene::bench_three_sphere();
@@ -46,7 +45,7 @@ fn bench_perlin_and_earth(c: &mut Criterion) {
 
 criterion_group! {
     name = benches;
-    config = Criterion::default().measurement_time(Duration::from_secs_f64(170.0));
+    config = Criterion::default().sample_size(10);
     targets = bench_three_spheres, bench_big_scene, bench_cornell_box, bench_perlin_and_earth
 }
 criterion_main!(benches);
