@@ -23,10 +23,10 @@ name = "my_benchmark"
 harness = false
 
 [profile.release]
-strip = true
-lto = true
-codegen-units = 1
-panic = "abort"
+#strip = true
+#lto = true
+#codegen-units = 1
+#panic = "abort"
 #debug = 1
 
 # Disable rust bench because this project uses criterion

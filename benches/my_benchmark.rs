@@ -1,40 +1,52 @@
-use criterion::{criterion_group, criterion_main, Criterion};
-use raytracing::camera::Camera;
+use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use raytracing::consts::*;
-use raytracing::geometry::hit::HittableList;
-use raytracing::geometry::sphere::Sphere;
-use raytracing::material::Material;
-use raytracing::math::color::Color;
-use raytracing::math::vec3::*;
 use raytracing::renderer::render_no_bar_multithreaded;
 use raytracing::scene::Scene;
 use std::time::Duration;
 
-fn criterion_benchmark(c: &mut Criterion) {
-    let mut world = HittableList::new();
+fn bench_three_spheres(c: &mut Criterion) {
+    let scene = Scene::bench_three_sphere();
 
-    let material = Material::new_dielectric(1.5);
-    world.add_sphere(Sphere::new(Vec3::new(0.0, 1.0, 0.0), 1.0, material));
-    let material = Material::new_lambertian_color(Color::new(0.4, 0.2, 0.1));
-    world.add_sphere(Sphere::new(Vec3::new(-4.0, 1.0, 0.0), 1.0, material));
-    let material = Material::new_metal(Color::new(0.7, 0.6, 0.5), 0.0);
-    world.add_sphere(Sphere::new(Vec3::new(4.0, 1.0, 0.0), 1.0, material));
-    world.init_bvh_nodes();
-
-    let camera = Camera::default();
-
-    let scene = Scene::new(world, camera, Color::white());
-
-    c.bench_function("render", |b| {
+    c.bench_function("render three_spheres", |b| {
         b.iter(|| {
-            render_no_bar_multithreaded(&scene, IMAGE_WIDTH, IMAGE_HEIGHT);
+            render_no_bar_multithreaded(black_box(&scene), IMAGE_WIDTH, IMAGE_HEIGHT);
+        })
+    });
+}
+
+fn bench_big_scene(c: &mut Criterion) {
+    let scene = Scene::big_scene();
+
+    c.bench_function("render big_scene", |b| {
+        b.iter(|| {
+            render_no_bar_multithreaded(black_box(&scene), IMAGE_WIDTH, IMAGE_HEIGHT);
+        })
+    });
+}
+
+fn bench_cornell_box(c: &mut Criterion) {
+    let scene = Scene::cornell_box();
+
+    c.bench_function("render cornell_box", |b| {
+        b.iter(|| {
+            render_no_bar_multithreaded(black_box(&scene), IMAGE_WIDTH, IMAGE_HEIGHT);
+        })
+    });
+}
+
+fn bench_(c: &mut Criterion) {
+    let scene = Scene::cornell_box();
+
+    c.bench_function("render cornell_box", |b| {
+        b.iter(|| {
+            render_no_bar_multithreaded(black_box(&scene), IMAGE_WIDTH, IMAGE_HEIGHT);
         })
     });
 }
 
 criterion_group! {
     name = benches;
-    config = Criterion::default().measurement_time(Duration::from_secs_f64(130.0));
-    targets = criterion_benchmark
+    config = Criterion::default().measurement_time(Duration::from_secs_f64(170.0));
+    targets = bench_three_spheres, bench_big_scene, bench_cornell_box
 }
 criterion_main!(benches);

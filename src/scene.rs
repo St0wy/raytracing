@@ -1,9 +1,9 @@
 use crate::camera::Camera;
 use crate::consts::ASPECT_RATIO;
 use crate::geometry::aabb_box::AabbBox;
+use crate::geometry::hittable_world::HittableWorld;
 use crate::geometry::moving_sphere::MovingSphere;
 use crate::geometry::sphere::Sphere;
-use crate::geometry::hittable_world::HittableWorld;
 use crate::geometry::xy_rectangle::XyRectangle;
 use crate::geometry::xz_rectangle::XzRectangle;
 use crate::geometry::yz_rectangle::YzRectangle;
@@ -30,7 +30,7 @@ impl Scene {
         }
     }
 
-    pub fn bench() -> Self {
+    pub fn bench_three_sphere() -> Self {
         let mut world = HittableWorld::new();
 
         let material = Material::new_dielectric(1.5);
@@ -39,6 +39,7 @@ impl Scene {
         world.add_sphere(Sphere::new(Vec3::new(0.0, 1.0, 0.0), 1.0, material));
         let material = Material::new_lambertian_color(Color::new(0.4, 0.2, 0.1));
         world.add_sphere(Sphere::new(Vec3::new(-4.0, 1.0, 0.0), 1.0, material));
+        world.init_bvh_nodes();
 
         Self::new(world, Camera::default(), Color::new(0.70, 0.80, 1.00))
     }
@@ -100,6 +101,29 @@ impl Scene {
             2.0,
             Material::new_lambertian(perlin_texture),
         ));
+
+        hittable_list.init_bvh_nodes();
+
+        Self {
+            hittable_list,
+            camera: Camera::default(),
+            background_color: Color::new(0.70, 0.80, 1.00),
+        }
+    }
+
+    pub fn perlin_and_earth() -> Self {
+        let mut hittable_list = HittableWorld::new();
+        let perlin_texture = Texture::new_noise(Perlin::new(), 4.0);
+        let earth_texture =
+            Texture::new_image("earthmap.png".to_string()).expect("Failed to load earth texture");
+        let earth_surface = Material::new_lambertian(earth_texture);
+
+        hittable_list.add_sphere(Sphere::new(
+            Vec3::new(0.0, -1000.0, 0.0),
+            1000.0,
+            Material::new_lambertian(perlin_texture),
+        ));
+        hittable_list.add_sphere(Sphere::new(Vec3::new(0.0, 2.0, 0.0), 2.0, earth_surface));
 
         hittable_list.init_bvh_nodes();
 

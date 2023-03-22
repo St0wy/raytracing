@@ -38,7 +38,7 @@ pub fn run_big_scene() {
 }
 
 pub fn run_same_as_bench() {
-    let scene = Scene::bench();
+    let scene = Scene::bench_three_sphere();
 
     let start = Instant::now();
 

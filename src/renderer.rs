@@ -26,7 +26,7 @@ fn ray_color(mut ray: Ray, background_color: &Color, hittable_list: &HittableWor
         let record = hittable_list.hit_no_limit(&ray);
 
         if record.is_none() {
-            return *background_color;
+            return *background_color * color;
         }
         let record = record.unwrap();
         let emit = record
