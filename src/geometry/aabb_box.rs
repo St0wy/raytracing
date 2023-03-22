@@ -1,4 +1,3 @@
-use tracy::zone;
 use crate::geometry::aabb::Aabb;
 use crate::geometry::hit::{HitRecord, Hittable};
 use crate::geometry::xy_rectangle::XyRectangle;
@@ -7,6 +6,7 @@ use crate::geometry::yz_rectangle::YzRectangle;
 use crate::material::Material;
 use crate::math::vec3::Vec3;
 use crate::ray::Ray;
+use tracy::zone;
 
 pub struct AabbBox {
     box_min: Vec3,
@@ -67,7 +67,7 @@ impl AabbBox {
                     box_max.x,
                 ),
                 YzRectangle::new(
-                    material.clone(),
+                    material,
                     box_min.y,
                     box_max.y,
                     box_min.z,
@@ -87,8 +87,7 @@ impl Hittable for AabbBox {
 
         for side in self.sides_xy.iter() {
             let record = side.hit(ray, t_min, closest_distance);
-            if record.is_some() {
-                let record = record.unwrap();
+            if let Some(record) = record {
                 closest_distance = record.t();
                 record_option = Some(record);
             }
@@ -96,8 +95,7 @@ impl Hittable for AabbBox {
 
         for side in self.sides_xz.iter() {
             let record = side.hit(ray, t_min, closest_distance);
-            if record.is_some() {
-                let record = record.unwrap();
+            if let Some(record) = record {
                 closest_distance = record.t();
                 record_option = Some(record);
             }
@@ -105,8 +103,7 @@ impl Hittable for AabbBox {
 
         for side in self.sides_yz.iter() {
             let record = side.hit(ray, t_min, closest_distance);
-            if record.is_some() {
-                let record = record.unwrap();
+            if let Some(record) = record {
                 closest_distance = record.t();
                 record_option = Some(record);
             }

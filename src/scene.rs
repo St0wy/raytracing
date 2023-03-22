@@ -177,14 +177,14 @@ impl Scene {
         let light = Material::new_diffuse_light_color(Color::new(force, force, force));
 
         hittable_list.add_yz_rectangle(YzRectangle::new(
-            green.clone(),
+            green,
             0.0,
             555.0,
             0.0,
             555.0,
             555.0,
         ));
-        hittable_list.add_yz_rectangle(YzRectangle::new(red.clone(), 0.0, 555.0, 0.0, 555.0, 0.0));
+        hittable_list.add_yz_rectangle(YzRectangle::new(red, 0.0, 555.0, 0.0, 555.0, 0.0));
         let size = 30.0;
         hittable_list.add_xz_rectangle(XzRectangle::new(
             light,
@@ -226,7 +226,7 @@ impl Scene {
         hittable_list.add_aabb_box(AabbBox::new(
             Vec3::new(265.0, 0.0, 295.0),
             Vec3::new(430.0, 330.0, 460.0),
-            white.clone(),
+            white,
         ));
         hittable_list.init_bvh_nodes();
 

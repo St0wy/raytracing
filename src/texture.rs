@@ -14,7 +14,7 @@ pub enum Texture {
         even: Box<Texture>,
     },
     Noise {
-        noise: Perlin,
+        noise: Box<Perlin>,
         scale: f32,
     },
     Image {
@@ -38,7 +38,10 @@ impl Texture {
     }
 
     pub fn new_noise(noise: Perlin, scale: f32) -> Self {
-        Texture::Noise { noise, scale }
+        Texture::Noise {
+            noise: Box::new(noise),
+            scale,
+        }
     }
 
     pub fn new_image(filename: String) -> Option<Self> {
@@ -97,7 +100,7 @@ impl Texture {
                 width,
                 height,
                 bytes_per_scanline,
-            } => get_texture_image_value(u, v, &data, *width, *height, *bytes_per_scanline),
+            } => get_texture_image_value(u, v, data, *width, *height, *bytes_per_scanline),
         }
     }
 }

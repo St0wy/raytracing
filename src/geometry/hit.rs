@@ -108,6 +108,7 @@ impl HittableObjectIndex {
     }
 }
 
+#[derive(Default)]
 pub struct HittableList {
     spheres: Vec<Sphere>,
     moving_spheres: Vec<MovingSphere>,
@@ -313,8 +314,8 @@ impl HittableList {
         let len = hittables.len();
         let (left, right) = match len {
             0 => panic!("0 Hittables provided to node creation"),
-            1 => (hittables[0].clone(), hittables[0].clone()),
-            2 => (hittables[0].clone(), hittables[1].clone()),
+            1 => (hittables[0], hittables[0]),
+            2 => (hittables[0], hittables[1]),
             _ => {
                 hittables.sort_unstable_by(self.box_compare(time0, time1, axis));
                 let mid = len / 2;
@@ -408,7 +409,7 @@ impl Hittable for HittableList {
             panic!("There should be nodes in the hittable list.");
         }
 
-        self.hit_node(&first.unwrap(), ray, t_min, t_max)
+        self.hit_node(first.unwrap(), ray, t_min, t_max)
     }
 
     fn bounding_box(&self, time0: f32, time1: f32) -> Option<Aabb> {

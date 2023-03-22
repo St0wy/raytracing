@@ -52,19 +52,19 @@ pub fn run_same_as_bench() {
     write_image(&pixels, Path::new(FILE_DEFAULT_PATH));
 }
 
-fn write_image(pixels: &Vec<u8>, path: &Path) {
+fn write_image(pixels: &[u8], path: &Path) {
     zone!();
     println!("Writing image...");
 
     let file = File::create(path).unwrap();
-    let ref mut w = BufWriter::new(file);
+    let w = &mut BufWriter::new(file);
 
     let mut encoder = png::Encoder::new(w, IMAGE_WIDTH as u32, IMAGE_HEIGHT as u32);
     encoder.set_color(png::ColorType::Rgb);
     encoder.set_depth(png::BitDepth::Eight);
 
     let mut writer = encoder.write_header().unwrap();
-    writer.write_image_data(&pixels).unwrap();
+    writer.write_image_data(pixels).unwrap();
 
     let path_str = path.to_str().unwrap();
     println!("Image written to {path_str}");

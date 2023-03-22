@@ -40,7 +40,7 @@ fn ray_color(mut ray: Ray, background_color: &Color, hittable_list: &HittableLis
         }
 
         let scatter = scatter.unwrap();
-        color = color * scatter.attenuation;
+        color *= scatter.attenuation;
         ray = scatter.scattered;
 
         if color.dot(&color) < 0.0001 {
@@ -104,7 +104,7 @@ pub fn render_single_core(scene: &Scene, image_width: usize, image_height: usize
 
     bar.finish();
 
-    return pixels;
+    pixels
 }
 
 pub fn render_no_bar(scene: &Scene, image_width: usize, image_height: usize) -> Vec<u8> {
@@ -127,7 +127,7 @@ pub fn render_no_bar(scene: &Scene, image_width: usize, image_height: usize) -> 
         }
     }
 
-    return pixels;
+    pixels
 }
 
 pub fn render_no_bar_multithreaded(
@@ -157,7 +157,6 @@ pub fn render_no_bar_multithreaded(
 
                     const SCALE: f32 = 1.0 / SAMPLES_PER_PIXEL as f32;
                     (0..3)
-                        .into_iter()
                         .map(|k| {
                             (256.0 * (pixel_color[k as usize] * SCALE).sqrt().clamp(0.0, 0.999))
                                 as u8
@@ -168,5 +167,5 @@ pub fn render_no_bar_multithreaded(
         })
         .collect::<Vec<u8>>();
 
-    return pixels;
+    pixels
 }
