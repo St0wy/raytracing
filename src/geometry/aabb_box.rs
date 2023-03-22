@@ -67,12 +67,7 @@ impl AabbBox {
                     box_max.x,
                 ),
                 YzRectangle::new(
-                    material,
-                    box_min.y,
-                    box_max.y,
-                    box_min.z,
-                    box_max.z,
-                    box_min.x,
+                    material, box_min.y, box_max.y, box_min.z, box_max.z, box_min.x,
                 ),
             ],
         }

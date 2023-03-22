@@ -25,7 +25,7 @@ impl HittableObjectIndex {
 }
 
 #[derive(Default)]
-pub struct HittableList {
+pub struct HittableWorld {
     spheres: Vec<Sphere>,
     moving_spheres: Vec<MovingSphere>,
     xy_rectangles: Vec<XyRectangle>,
@@ -36,7 +36,7 @@ pub struct HittableList {
     first_node_index: usize,
 }
 
-impl HittableList {
+impl HittableWorld {
     pub fn new() -> Self {
         Self {
             spheres: Vec::new(),
@@ -316,7 +316,7 @@ fn get_objects_bounding_box<T: Hittable>(items: &Vec<T>, time0: f32, time1: f32)
     Some(output_box)
 }
 
-impl Hittable for HittableList {
+impl Hittable for HittableWorld {
     fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
         zone!();
         let first = self.bvh_nodes.get(self.first_node_index);
@@ -351,15 +351,15 @@ impl Hittable for HittableList {
 
 #[cfg(test)]
 mod tests {
-    use crate::geometry::hittable_list::HittableList;
     use crate::geometry::sphere::Sphere;
+    use crate::geometry::hittable_world::HittableWorld;
     use crate::material::Material;
     use crate::math::vec3::Vec3;
     use crate::ray::Ray;
 
     #[test]
-    fn hittable_list_hit_with_one_object() {
-        let mut hittable_list = HittableList::new();
+    fn hittable_world_hit_with_one_object() {
+        let mut hittable_list = HittableWorld::new();
         let sphere = Sphere::new(
             Vec3::new(0.0, 0.0, 10.0),
             3.0,

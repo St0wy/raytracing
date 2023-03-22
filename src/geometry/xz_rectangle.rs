@@ -1,9 +1,9 @@
-use tracy_full::zone;
 use crate::geometry::aabb::Aabb;
 use crate::geometry::hit::{HitRecord, Hittable};
 use crate::material::Material;
 use crate::math::vec3::Vec3;
 use crate::ray::Ray;
+use tracy_full::zone;
 
 pub struct XzRectangle {
     material: Material,

@@ -4,7 +4,7 @@ use rayon::prelude::*;
 use tracy_full::zone;
 
 use crate::consts::{MAX_DEPTH, SAMPLES_PER_PIXEL};
-use crate::geometry::hittable_list::HittableList;
+use crate::geometry::hittable_world::HittableWorld;
 use crate::math::color::Color;
 use crate::ray::Ray;
 use crate::scene::Scene;
@@ -17,7 +17,7 @@ use crate::scene::Scene;
 /// * `hittable_list`: List of hittable objects to check the ray on.
 ///
 /// returns: Vec3
-fn ray_color(mut ray: Ray, background_color: &Color, hittable_list: &HittableList) -> Color {
+fn ray_color(mut ray: Ray, background_color: &Color, hittable_list: &HittableWorld) -> Color {
     zone!();
     let mut color = Color::white();
     let mut emitted = Color::black();

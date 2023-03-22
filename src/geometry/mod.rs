@@ -1,10 +1,10 @@
 pub mod aabb;
+pub mod aabb_box;
 pub mod bvh;
 pub mod hit;
 pub mod moving_sphere;
 pub mod sphere;
+pub mod hittable_world;
 pub mod xy_rectangle;
 pub mod xz_rectangle;
 pub mod yz_rectangle;
-pub mod aabb_box;
-pub mod hittable_list;

@@ -1,9 +1,9 @@
 use crate::camera::Camera;
 use crate::consts::ASPECT_RATIO;
 use crate::geometry::aabb_box::AabbBox;
-use crate::geometry::hittable_list::HittableList;
 use crate::geometry::moving_sphere::MovingSphere;
 use crate::geometry::sphere::Sphere;
+use crate::geometry::hittable_world::HittableWorld;
 use crate::geometry::xy_rectangle::XyRectangle;
 use crate::geometry::xz_rectangle::XzRectangle;
 use crate::geometry::yz_rectangle::YzRectangle;
@@ -16,13 +16,13 @@ use rand::{Rng, SeedableRng};
 use tracy_full::zone;
 
 pub struct Scene {
-    hittable_list: HittableList,
+    hittable_list: HittableWorld,
     camera: Camera,
     background_color: Color,
 }
 
 impl Scene {
-    pub fn new(hittable_list: HittableList, camera: Camera, background_color: Color) -> Self {
+    pub fn new(hittable_list: HittableWorld, camera: Camera, background_color: Color) -> Self {
         Self {
             hittable_list,
             camera,
@@ -31,7 +31,7 @@ impl Scene {
     }
 
     pub fn bench() -> Self {
-        let mut world = HittableList::new();
+        let mut world = HittableWorld::new();
 
         let material = Material::new_dielectric(1.5);
         world.add_sphere(Sphere::new(Vec3::new(4.0, 1.0, 0.0), 1.0, material));
@@ -60,7 +60,7 @@ impl Scene {
     }
 
     pub fn two_spheres() -> Self {
-        let mut hittable_list = HittableList::new();
+        let mut hittable_list = HittableWorld::new();
         let checker = Texture::new_checker(
             Texture::new_solid_color(Color::new(0.2, 0.3, 0.1)),
             Texture::new_solid_color(Color::new(0.9, 0.9, 0.9)),
@@ -87,7 +87,7 @@ impl Scene {
     }
 
     pub fn two_perlin_spheres() -> Self {
-        let mut hittable_list = HittableList::new();
+        let mut hittable_list = HittableWorld::new();
         let perlin_texture = Texture::new_noise(Perlin::new(), 4.0);
 
         hittable_list.add_sphere(Sphere::new(
@@ -111,7 +111,7 @@ impl Scene {
     }
 
     pub fn earth() -> Self {
-        let mut hittable_list = HittableList::new();
+        let mut hittable_list = HittableWorld::new();
         let earth_texture =
             Texture::new_image("earthmap.png".to_string()).expect("Failed to load image texture");
         let earth_surface = Material::new_lambertian(earth_texture);
@@ -127,7 +127,7 @@ impl Scene {
     }
 
     pub fn simple_light() -> Self {
-        let mut hittable_list = HittableList::new();
+        let mut hittable_list = HittableWorld::new();
 
         let perlin_texture = Texture::new_noise(Perlin::new(), 4.0);
         let ground = Sphere::new(
@@ -169,7 +169,7 @@ impl Scene {
 
     pub fn cornell_box() -> Self {
         zone!();
-        let mut hittable_list = HittableList::new();
+        let mut hittable_list = HittableWorld::new();
         let red = Material::new_lambertian_color(Color::new(0.65, 0.05, 0.05));
         let white = Material::new_lambertian_color(Color::new(0.73, 0.73, 0.73));
         let green = Material::new_lambertian_color(Color::new(0.12, 0.45, 0.15));
@@ -237,7 +237,7 @@ impl Scene {
         Self::new(hittable_list, camera, Color::black())
     }
 
-    pub fn hittable_list(&self) -> &HittableList {
+    pub fn hittable_list(&self) -> &HittableWorld {
         &self.hittable_list
     }
 
@@ -249,7 +249,7 @@ impl Scene {
         &self.background_color
     }
 
-    pub fn set_hittable_list(&mut self, hittable_list: HittableList) {
+    pub fn set_hittable_list(&mut self, hittable_list: HittableWorld) {
         self.hittable_list = hittable_list;
     }
 
@@ -258,8 +258,8 @@ impl Scene {
     }
 }
 
-fn fixed_big_scene() -> HittableList {
-    let mut world = HittableList::new();
+fn fixed_big_scene() -> HittableWorld {
+    let mut world = HittableWorld::new();
 
     let checker = Texture::new_checker(
         Texture::new_solid_color(Color::new(0.2, 0.3, 0.1)),
@@ -331,8 +331,8 @@ fn fixed_big_scene() -> HittableList {
     world
 }
 
-fn random_hittable_list() -> HittableList {
-    let mut world = HittableList::new();
+fn random_hittable_list() -> HittableWorld {
+    let mut world = HittableWorld::new();
 
     let material_ground = Material::new_lambertian_color(Color::new(0.5, 0.5, 0.5));
     world.add_sphere(Sphere::new(

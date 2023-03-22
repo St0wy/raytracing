@@ -1,9 +1,9 @@
-use tracy_full::zone;
 use crate::geometry::aabb::Aabb;
 use crate::geometry::hit::{HitRecord, Hittable};
 use crate::material::Material;
 use crate::math::vec3::Vec3;
 use crate::ray::Ray;
+use tracy_full::zone;
 
 pub struct XyRectangle {
     material: Material,
@@ -16,7 +16,14 @@ pub struct XyRectangle {
 
 impl XyRectangle {
     pub fn new(material: Material, x0: f32, x1: f32, y0: f32, y1: f32, k: f32) -> Self {
-        Self { material, x0, x1, y0, y1, k }
+        Self {
+            material,
+            x0,
+            x1,
+            y0,
+            y1,
+            k,
+        }
     }
 }
 
