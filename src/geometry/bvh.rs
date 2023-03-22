@@ -1,5 +1,5 @@
 use crate::geometry::aabb::Aabb;
-use crate::geometry::hit::HittableObjectIndex;
+use crate::geometry::hittable_list::HittableObjectIndex;
 
 #[derive(Debug)]
 pub struct BvhNode {

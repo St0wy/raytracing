@@ -1,10 +1,10 @@
 use indicatif::{ProgressBar, ProgressStyle};
 use rand::Rng;
 use rayon::prelude::*;
-use tracy::zone;
+use tracy_full::zone;
 
 use crate::consts::{MAX_DEPTH, SAMPLES_PER_PIXEL};
-use crate::geometry::hit::HittableList;
+use crate::geometry::hittable_list::HittableList;
 use crate::math::color::Color;
 use crate::ray::Ray;
 use crate::scene::Scene;

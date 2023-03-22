@@ -1,4 +1,4 @@
-use tracy::zone;
+use tracy_full::zone;
 use crate::math::vec3::Vec3;
 use crate::ray::Ray;
 

@@ -1,4 +1,4 @@
-use tracy::zone;
+use tracy_full::zone;
 use crate::geometry::aabb::Aabb;
 use crate::geometry::sphere::Sphere;
 use crate::material::Material;

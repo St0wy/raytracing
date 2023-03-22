@@ -2,7 +2,7 @@ use crate::geometry::aabb::Aabb;
 use crate::material::Material;
 use crate::{math::vec3::*, ray::Ray};
 use std::f32::consts::PI;
-use tracy::zone;
+use tracy_full::zone;
 
 use super::hit::{HitRecord, Hittable};
 

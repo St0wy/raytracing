@@ -11,8 +11,7 @@ rand = "0.8.5"
 rand_chacha = "0.3.1"
 rayon = "1.7.0"
 
-[dependencies.tracy]
-package = "tracy_full"
+[dependencies.tracy_full]
 version = "1.4.0"
 #features = ["enable", "unstable"]
 

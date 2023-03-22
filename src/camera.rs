@@ -2,7 +2,7 @@ use crate::consts::ASPECT_RATIO;
 use crate::math::utils::degrees_to_radians;
 use crate::{math::vec3::*, ray::Ray};
 use rand::Rng;
-use tracy::zone;
+use tracy_full::zone;
 
 pub struct Camera {
     origin: Vec3,

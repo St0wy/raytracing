@@ -1,7 +1,7 @@
 use crate::camera::Camera;
 use crate::consts::ASPECT_RATIO;
 use crate::geometry::aabb_box::AabbBox;
-use crate::geometry::hit::HittableList;
+use crate::geometry::hittable_list::HittableList;
 use crate::geometry::moving_sphere::MovingSphere;
 use crate::geometry::sphere::Sphere;
 use crate::geometry::xy_rectangle::XyRectangle;
@@ -13,7 +13,7 @@ use crate::math::perlin::Perlin;
 use crate::math::vec3::Vec3;
 use crate::texture::Texture;
 use rand::{Rng, SeedableRng};
-use tracy::zone;
+use tracy_full::zone;
 
 pub struct Scene {
     hittable_list: HittableList,
@@ -176,14 +176,7 @@ impl Scene {
         let force = 15.0;
         let light = Material::new_diffuse_light_color(Color::new(force, force, force));
 
-        hittable_list.add_yz_rectangle(YzRectangle::new(
-            green,
-            0.0,
-            555.0,
-            0.0,
-            555.0,
-            555.0,
-        ));
+        hittable_list.add_yz_rectangle(YzRectangle::new(green, 0.0, 555.0, 0.0, 555.0, 555.0));
         hittable_list.add_yz_rectangle(YzRectangle::new(red, 0.0, 555.0, 0.0, 555.0, 0.0));
         let size = 30.0;
         hittable_list.add_xz_rectangle(XzRectangle::new(

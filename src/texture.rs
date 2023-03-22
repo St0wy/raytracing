@@ -2,7 +2,7 @@ use crate::math::color::Color;
 use crate::math::perlin::Perlin;
 use crate::math::vec3::Vec3;
 use std::fs::File;
-use tracy::zone;
+use tracy_full::zone;
 
 const BYTES_PER_PIXEL: usize = 3;
 

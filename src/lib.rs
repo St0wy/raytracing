@@ -13,7 +13,7 @@ use human_time::ToHumanTimeString;
 use std::io::BufWriter;
 use std::path::Path;
 use std::{fs::File, time::Instant};
-use tracy::zone;
+use tracy_full::zone;
 
 use crate::renderer::{render_no_bar, render_no_bar_multithreaded};
 use crate::scene::Scene;

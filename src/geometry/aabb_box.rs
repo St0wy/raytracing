@@ -6,7 +6,7 @@ use crate::geometry::yz_rectangle::YzRectangle;
 use crate::material::Material;
 use crate::math::vec3::Vec3;
 use crate::ray::Ray;
-use tracy::zone;
+use tracy_full::zone;
 
 pub struct AabbBox {
     box_min: Vec3,

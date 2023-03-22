@@ -1,4 +1,4 @@
-use tracy::alloc::GlobalAllocator;
+use tracy_full::alloc::GlobalAllocator;
 use raytracing::run_big_scene;
 
 #[global_allocator]

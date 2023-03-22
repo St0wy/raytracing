@@ -4,7 +4,7 @@ use crate::math::vec3::Vec3;
 use crate::ray::Ray;
 use crate::texture::Texture;
 use rand::Rng;
-use tracy::zone;
+use tracy_full::zone;
 
 #[derive(Default)]
 pub struct ScatterResult {
