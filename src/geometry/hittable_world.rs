@@ -40,8 +40,7 @@ impl Hittable for HittableWorld {
         let mut closest_so_far = t_max;
 
         for object in self.hittables.iter() {
-            temp_record = object.hit(ray, t_min, closest_so_far);
-            if let Some(record) = temp_record {
+            if let Some(record) = object.hit(ray, t_min, closest_so_far) {
                 closest_so_far = record.t();
                 temp_record = Some(record);
             }
