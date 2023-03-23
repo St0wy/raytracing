@@ -1,4 +1,3 @@
-use crate::geometry::aabb::Aabb;
 use crate::geometry::hit::{HitRecord, Hittable};
 use crate::material::Material;
 use crate::math::vec3::Vec3;
@@ -53,13 +52,6 @@ impl Hittable for XzRectangle {
             outward_normal,
             &ray.direction(),
             &self.material,
-        ))
-    }
-
-    fn bounding_box(&self, _: f32, _: f32) -> Option<Aabb> {
-        Some(Aabb::new(
-            Vec3::new(self.x0, self.k - 0.0001, self.z0),
-            Vec3::new(self.x1, self.k + 0.0001, self.z1),
         ))
     }
 }

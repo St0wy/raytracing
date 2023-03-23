@@ -34,12 +34,11 @@ impl Scene {
         let mut world = HittableWorld::new();
 
         let material = Material::new_dielectric(1.5);
-        world.add_sphere(Sphere::new(Vec3::new(4.0, 1.0, 0.0), 1.0, material));
+        world.add_hittable(Sphere::new(Vec3::new(4.0, 1.0, 0.0), 1.0, material));
         let material = Material::new_metal(Color::new(0.7, 0.6, 0.5), 0.0);
-        world.add_sphere(Sphere::new(Vec3::new(0.0, 1.0, 0.0), 1.0, material));
+        world.add_hittable(Sphere::new(Vec3::new(0.0, 1.0, 0.0), 1.0, material));
         let material = Material::new_lambertian_color(Color::new(0.4, 0.2, 0.1));
-        world.add_sphere(Sphere::new(Vec3::new(-4.0, 1.0, 0.0), 1.0, material));
-        world.init_bvh_nodes();
+        world.add_hittable(Sphere::new(Vec3::new(-4.0, 1.0, 0.0), 1.0, material));
 
         Self::new(world, Camera::default(), Color::new(0.70, 0.80, 1.00))
     }
@@ -67,18 +66,16 @@ impl Scene {
             Texture::new_solid_color(Color::new(0.9, 0.9, 0.9)),
         );
 
-        hittable_list.add_sphere(Sphere::new(
+        hittable_list.add_hittable(Sphere::new(
             Vec3::new(0.0, -10.0, 0.0),
             10.0,
             Material::new_lambertian(checker.clone()),
         ));
-        hittable_list.add_sphere(Sphere::new(
+        hittable_list.add_hittable(Sphere::new(
             Vec3::new(0.0, 10.0, 0.0),
             10.0,
             Material::new_lambertian(checker),
         ));
-
-        hittable_list.init_bvh_nodes();
 
         Self {
             hittable_list,
@@ -91,18 +88,16 @@ impl Scene {
         let mut hittable_list = HittableWorld::new();
         let perlin_texture = Texture::new_noise(Perlin::new(), 4.0);
 
-        hittable_list.add_sphere(Sphere::new(
+        hittable_list.add_hittable(Sphere::new(
             Vec3::new(0.0, -1000.0, 0.0),
             1000.0,
             Material::new_lambertian(perlin_texture.clone()),
         ));
-        hittable_list.add_sphere(Sphere::new(
+        hittable_list.add_hittable(Sphere::new(
             Vec3::new(0.0, 2.0, 0.0),
             2.0,
             Material::new_lambertian(perlin_texture),
         ));
-
-        hittable_list.init_bvh_nodes();
 
         Self {
             hittable_list,
@@ -118,14 +113,12 @@ impl Scene {
             Texture::new_image("earthmap.png".to_string()).expect("Failed to load earth texture");
         let earth_surface = Material::new_lambertian(earth_texture);
 
-        hittable_list.add_sphere(Sphere::new(
+        hittable_list.add_hittable(Sphere::new(
             Vec3::new(0.0, -1000.0, 0.0),
             1000.0,
             Material::new_lambertian(perlin_texture),
         ));
-        hittable_list.add_sphere(Sphere::new(Vec3::new(0.0, 2.0, 0.0), 2.0, earth_surface));
-
-        hittable_list.init_bvh_nodes();
+        hittable_list.add_hittable(Sphere::new(Vec3::new(0.0, 2.0, 0.0), 2.0, earth_surface));
 
         Self {
             hittable_list,
@@ -140,8 +133,7 @@ impl Scene {
             Texture::new_image("earthmap.png".to_string()).expect("Failed to load image texture");
         let earth_surface = Material::new_lambertian(earth_texture);
         let globe = Sphere::new(Vec3::new(0.0, 0.0, 0.0), 2.0, earth_surface);
-        hittable_list.add_sphere(globe);
-        hittable_list.init_bvh_nodes();
+        hittable_list.add_hittable(globe);
 
         Self {
             hittable_list,
@@ -159,19 +151,17 @@ impl Scene {
             1000.0,
             Material::new_lambertian(perlin_texture.clone()),
         );
-        hittable_list.add_sphere(ground);
+        hittable_list.add_hittable(ground);
 
         let sphere = Sphere::new(
             Vec3::new(0.0, 2.0, 0.0),
             2.0,
             Material::new_lambertian(perlin_texture),
         );
-        hittable_list.add_sphere(sphere);
+        hittable_list.add_hittable(sphere);
 
         let diffuse_light = Material::new_diffuse_light_color(Color::new(4.0, 4.0, 4.0));
-        hittable_list.add_xy_rectangle(XyRectangle::new(diffuse_light, 3.0, 5.0, 1.0, 3.0, -2.0));
-
-        hittable_list.init_bvh_nodes();
+        hittable_list.add_hittable(XyRectangle::new(diffuse_light, 3.0, 5.0, 1.0, 3.0, -2.0));
 
         let mut camera = Camera::new(
             Vec3::new(26.0, 3.0, 6.0),
@@ -200,10 +190,10 @@ impl Scene {
         let force = 15.0;
         let light = Material::new_diffuse_light_color(Color::new(force, force, force));
 
-        hittable_list.add_yz_rectangle(YzRectangle::new(green, 0.0, 555.0, 0.0, 555.0, 555.0));
-        hittable_list.add_yz_rectangle(YzRectangle::new(red, 0.0, 555.0, 0.0, 555.0, 0.0));
+        hittable_list.add_hittable(YzRectangle::new(green, 0.0, 555.0, 0.0, 555.0, 555.0));
+        hittable_list.add_hittable(YzRectangle::new(red, 0.0, 555.0, 0.0, 555.0, 0.0));
         let size = 30.0;
-        hittable_list.add_xz_rectangle(XzRectangle::new(
+        hittable_list.add_hittable(XzRectangle::new(
             light,
             213.0 - size,
             343.0 + size,
@@ -211,15 +201,8 @@ impl Scene {
             332.0 + size,
             554.0,
         ));
-        hittable_list.add_xz_rectangle(XzRectangle::new(
-            white.clone(),
-            0.0,
-            555.0,
-            0.0,
-            555.0,
-            0.0,
-        ));
-        hittable_list.add_xz_rectangle(XzRectangle::new(
+        hittable_list.add_hittable(XzRectangle::new(white.clone(), 0.0, 555.0, 0.0, 555.0, 0.0));
+        hittable_list.add_hittable(XzRectangle::new(
             white.clone(),
             0.0,
             555.0,
@@ -227,7 +210,7 @@ impl Scene {
             555.0,
             555.0,
         ));
-        hittable_list.add_xy_rectangle(XyRectangle::new(
+        hittable_list.add_hittable(XyRectangle::new(
             white.clone(),
             0.0,
             555.0,
@@ -235,17 +218,16 @@ impl Scene {
             555.0,
             555.0,
         ));
-        hittable_list.add_aabb_box(AabbBox::new(
+        hittable_list.add_hittable(AabbBox::new(
             Vec3::new(130.0, 0.0, 65.0),
             Vec3::new(295.0, 165.0, 230.0),
             white.clone(),
         ));
-        hittable_list.add_aabb_box(AabbBox::new(
+        hittable_list.add_hittable(AabbBox::new(
             Vec3::new(265.0, 0.0, 295.0),
             Vec3::new(430.0, 330.0, 460.0),
             white,
         ));
-        hittable_list.init_bvh_nodes();
 
         let mut camera = Camera::new(
             Vec3::new(278.0, 278.0, -800.0),
@@ -290,7 +272,7 @@ fn fixed_big_scene() -> HittableWorld {
         Texture::new_solid_color(Color::new(0.9, 0.9, 0.9)),
     );
     let material_ground = Material::new_lambertian(checker);
-    world.add_sphere(Sphere::new(
+    world.add_hittable(Sphere::new(
         Vec3::new(0.0, -1000.0, -1.0),
         1000.0,
         material_ground,
@@ -314,7 +296,7 @@ fn fixed_big_scene() -> HittableWorld {
                         Color::random_specific(&mut rng) * Color::random_specific(&mut rng);
                     let sphere_material = Material::new_lambertian_color(albedo);
                     let center2 = center + Vec3::new(0.0, rng.gen_range(0.0..0.5), 0.0);
-                    world.add_moving_sphere(MovingSphere::new(
+                    world.add_hittable(MovingSphere::new(
                         center,
                         center2,
                         0.0,
@@ -327,30 +309,28 @@ fn fixed_big_scene() -> HittableWorld {
                     let albedo =
                         Color::random_specific(&mut rng) * Color::random_specific(&mut rng);
                     let sphere_material = Material::new_lambertian_color(albedo);
-                    world.add_sphere(Sphere::new(center, 0.2, sphere_material));
+                    world.add_hittable(Sphere::new(center, 0.2, sphere_material));
                 } else if choose_mat < 0.95 {
                     // Metal 🤘
                     let albedo = Color::random_range_specific(0.5..1.0, &mut rng);
                     let fuzz = rng.gen_range(0.0..0.5);
                     let sphere_material = Material::new_metal(albedo, fuzz);
-                    world.add_sphere(Sphere::new(center, 0.2, sphere_material));
+                    world.add_hittable(Sphere::new(center, 0.2, sphere_material));
                 } else {
                     // Glass
                     let sphere_material = Material::new_dielectric(1.5);
-                    world.add_sphere(Sphere::new(center, 0.2, sphere_material));
+                    world.add_hittable(Sphere::new(center, 0.2, sphere_material));
                 }
             }
         }
     }
 
     let material = Material::new_dielectric(1.5);
-    world.add_sphere(Sphere::new(Vec3::new(0.0, 1.0, 0.0), 1.0, material));
+    world.add_hittable(Sphere::new(Vec3::new(0.0, 1.0, 0.0), 1.0, material));
     let material = Material::new_lambertian_color(Color::new(0.4, 0.2, 0.1));
-    world.add_sphere(Sphere::new(Vec3::new(-4.0, 1.0, 0.0), 1.0, material));
+    world.add_hittable(Sphere::new(Vec3::new(-4.0, 1.0, 0.0), 1.0, material));
     let material = Material::new_metal(Color::new(0.7, 0.6, 0.5), 0.0);
-    world.add_sphere(Sphere::new(Vec3::new(4.0, 1.0, 0.0), 1.0, material));
-
-    world.init_bvh_nodes();
+    world.add_hittable(Sphere::new(Vec3::new(4.0, 1.0, 0.0), 1.0, material));
 
     world
 }
@@ -359,7 +339,7 @@ fn random_hittable_list() -> HittableWorld {
     let mut world = HittableWorld::new();
 
     let material_ground = Material::new_lambertian_color(Color::new(0.5, 0.5, 0.5));
-    world.add_sphere(Sphere::new(
+    world.add_hittable(Sphere::new(
         Vec3::new(0.0, -1000.0, -1.0),
         1000.0,
         material_ground,
@@ -383,7 +363,7 @@ fn random_hittable_list() -> HittableWorld {
                         Color::random_specific(&mut rng) * Color::random_specific(&mut rng);
                     let sphere_material = Material::new_lambertian_color(albedo);
                     let center2 = center + Vec3::new(0.0, rng.gen_range(0.0..0.5), 0.0);
-                    world.add_moving_sphere(MovingSphere::new(
+                    world.add_hittable(MovingSphere::new(
                         center,
                         center2,
                         0.0,
@@ -395,30 +375,28 @@ fn random_hittable_list() -> HittableWorld {
                     // Diffuse
                     let albedo = Color::random() * Color::random();
                     let sphere_material = Material::new_lambertian_color(albedo);
-                    world.add_sphere(Sphere::new(center, 0.2, sphere_material));
+                    world.add_hittable(Sphere::new(center, 0.2, sphere_material));
                 } else if choose_mat < 0.95 {
                     // Metal 🤘
                     let albedo = Color::random_range(0.5..1.0);
                     let fuzz = rng.gen_range(0.0..0.5);
                     let sphere_material = Material::new_metal(albedo, fuzz);
-                    world.add_sphere(Sphere::new(center, 0.2, sphere_material));
+                    world.add_hittable(Sphere::new(center, 0.2, sphere_material));
                 } else {
                     // Glass
                     let sphere_material = Material::new_dielectric(1.5);
-                    world.add_sphere(Sphere::new(center, 0.2, sphere_material));
+                    world.add_hittable(Sphere::new(center, 0.2, sphere_material));
                 }
             }
         }
     }
 
     let material = Material::new_dielectric(1.5);
-    world.add_sphere(Sphere::new(Vec3::new(0.0, 1.0, 0.0), 1.0, material));
+    world.add_hittable(Sphere::new(Vec3::new(0.0, 1.0, 0.0), 1.0, material));
     let material = Material::new_lambertian_color(Color::new(0.4, 0.2, 0.1));
-    world.add_sphere(Sphere::new(Vec3::new(-4.0, 1.0, 0.0), 1.0, material));
+    world.add_hittable(Sphere::new(Vec3::new(-4.0, 1.0, 0.0), 1.0, material));
     let material = Material::new_metal(Color::new(0.7, 0.6, 0.5), 0.0);
-    world.add_sphere(Sphere::new(Vec3::new(4.0, 1.0, 0.0), 1.0, material));
-
-    world.init_bvh_nodes();
+    world.add_hittable(Sphere::new(Vec3::new(4.0, 1.0, 0.0), 1.0, material));
 
     world
 }

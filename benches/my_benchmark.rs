@@ -1,6 +1,6 @@
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use raytracing::consts::*;
-use raytracing::renderer::render_no_bar_multithreaded;
+use raytracing::renderer::render;
 use raytracing::scene::Scene;
 
 fn bench_three_spheres(c: &mut Criterion) {
@@ -8,7 +8,7 @@ fn bench_three_spheres(c: &mut Criterion) {
 
     c.bench_function("render three_spheres", |b| {
         b.iter(|| {
-            render_no_bar_multithreaded(black_box(&scene), IMAGE_WIDTH, IMAGE_HEIGHT);
+            render(black_box(&scene), IMAGE_WIDTH, IMAGE_HEIGHT);
         })
     });
 }
@@ -18,7 +18,7 @@ fn bench_big_scene(c: &mut Criterion) {
 
     c.bench_function("render big_scene", |b| {
         b.iter(|| {
-            render_no_bar_multithreaded(black_box(&scene), IMAGE_WIDTH, IMAGE_HEIGHT);
+            render(black_box(&scene), IMAGE_WIDTH, IMAGE_HEIGHT);
         })
     });
 }
@@ -28,7 +28,7 @@ fn bench_cornell_box(c: &mut Criterion) {
 
     c.bench_function("render cornell_box", |b| {
         b.iter(|| {
-            render_no_bar_multithreaded(black_box(&scene), IMAGE_WIDTH, IMAGE_HEIGHT);
+            render(black_box(&scene), IMAGE_WIDTH, IMAGE_HEIGHT);
         })
     });
 }
@@ -38,7 +38,7 @@ fn bench_perlin_and_earth(c: &mut Criterion) {
 
     c.bench_function("render perlin_and_earth", |b| {
         b.iter(|| {
-            render_no_bar_multithreaded(black_box(&scene), IMAGE_WIDTH, IMAGE_HEIGHT);
+            render(black_box(&scene), IMAGE_WIDTH, IMAGE_HEIGHT);
         })
     });
 }

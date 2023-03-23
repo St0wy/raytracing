@@ -13,36 +13,17 @@ use human_time::ToHumanTimeString;
 use std::io::BufWriter;
 use std::path::Path;
 use std::{fs::File, time::Instant};
-use tracy_full::zone;
 
-use crate::renderer::{render_no_bar, render_no_bar_multithreaded};
+use crate::renderer::render;
 use crate::scene::Scene;
 
 const FILE_DEFAULT_PATH: &str = "out.png";
 
-pub fn run_big_scene() {
-    zone!();
-    if cfg!(debug_assertions) {
-        println!("You are rendering this scene in debug, which is very slow. Make sure you don't want to run it in release mode.")
-    }
-
-    println!("Starting ray tracing...");
-    let start = Instant::now();
-    let pixels = render_no_bar_multithreaded(&Scene::cornell_box(), IMAGE_WIDTH, IMAGE_HEIGHT);
-    println!(
-        "Raytracing finished in {}",
-        start.elapsed().to_human_time_string()
-    );
-
-    write_image(&pixels, Path::new(FILE_DEFAULT_PATH));
-}
-
 pub fn run_same_as_bench() {
-    let scene = Scene::bench_three_sphere();
-
     let start = Instant::now();
 
-    let pixels = render_no_bar(&scene, IMAGE_WIDTH, IMAGE_HEIGHT);
+    let scene = Scene::perlin_and_earth();
+    let pixels = render(&scene, IMAGE_WIDTH, IMAGE_HEIGHT);
 
     println!(
         "Raytracing finished in {}",
@@ -53,7 +34,6 @@ pub fn run_same_as_bench() {
 }
 
 fn write_image(pixels: &[u8], path: &Path) {
-    zone!();
     println!("Writing image...");
 
     let file = File::create(path).unwrap();

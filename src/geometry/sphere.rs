@@ -1,4 +1,3 @@
-use crate::geometry::aabb::Aabb;
 use crate::material::Material;
 use crate::{math::vec3::*, ray::Ray};
 use std::f32::consts::PI;
@@ -66,14 +65,5 @@ impl Hittable for Sphere {
         );
 
         Some(record)
-    }
-
-    fn bounding_box(&self, _: f32, _: f32) -> Option<Aabb> {
-        let radius_vec = Vec3::new(self.radius, self.radius, self.radius);
-
-        Some(Aabb::new(
-            self.center - radius_vec,
-            self.center + radius_vec,
-        ))
     }
 }
