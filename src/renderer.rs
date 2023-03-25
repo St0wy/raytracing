@@ -58,7 +58,6 @@ pub fn render(scene: &Scene, image_width: usize, image_height: usize) -> Vec<u8>
         .rev()
         .flat_map(|j| {
             (0..image_width)
-                .into_par_iter()
                 .flat_map(|i| {
                     let mut pixel_color = Color::black();
                     for _ in 0..SAMPLES_PER_PIXEL {
