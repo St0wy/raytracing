@@ -17,6 +17,8 @@
   <component name="ChangeListManager">
     <list default="true" id="5d57bb42-7a3c-4d47-af3f-38b6573f1724" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/geometry/hit.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/hit.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/geometry/hittable_world.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/hittable_world.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -182,6 +184,7 @@
       <workItem from="1678959716607" duration="7878000" />
       <workItem from="1679482214156" duration="12550000" />
       <workItem from="1679566694970" duration="11122000" />
+      <workItem from="1679755944573" duration="724000" />
     </task>
     <servers />
   </component>

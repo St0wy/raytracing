@@ -72,3 +72,14 @@ impl<'a> HitRecord<'a> {
 pub trait Hittable {
     fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord>;
 }
+
+#[derive(Copy, Clone, Debug)]
+pub enum HittableObjectType {
+    Sphere,
+    MovingSphere,
+    XyRectangle,
+    XzRectangle,
+    YzRectangle,
+    AabbBox,
+    BvhNode,
+}
