@@ -1,5 +1,6 @@
 use crate::material::Material;
 use crate::{math::vec3::*, ray::Ray};
+use crate::geometry::aabb::Aabb;
 
 #[derive(Debug)]
 pub struct HitRecord<'a> {
@@ -71,6 +72,7 @@ impl<'a> HitRecord<'a> {
 
 pub trait Hittable {
     fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord>;
+    fn bounding_box(&self, time0: f32, time1: f32) -> Option<Aabb>;
 }
 
 #[derive(Copy, Clone, Debug)]

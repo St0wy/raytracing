@@ -39,6 +39,7 @@ impl Scene {
         world.add_sphere(Sphere::new(Vec3::new(0.0, 1.0, 0.0), 1.0, material));
         let material = Material::new_lambertian_color(Color::new(0.4, 0.2, 0.1));
         world.add_sphere(Sphere::new(Vec3::new(-4.0, 1.0, 0.0), 1.0, material));
+        world.init_bvh_nodes();
 
         Self::new(world, Camera::default(), Color::new(0.70, 0.80, 1.00))
     }
@@ -76,6 +77,7 @@ impl Scene {
             10.0,
             Material::new_lambertian(checker),
         ));
+        hittable_list.init_bvh_nodes();
 
         Self {
             hittable_list,
@@ -98,6 +100,7 @@ impl Scene {
             2.0,
             Material::new_lambertian(perlin_texture),
         ));
+        hittable_list.init_bvh_nodes();
 
         Self {
             hittable_list,
@@ -119,6 +122,7 @@ impl Scene {
             Material::new_lambertian(perlin_texture),
         ));
         hittable_list.add_sphere(Sphere::new(Vec3::new(0.0, 2.0, 0.0), 2.0, earth_surface));
+        hittable_list.init_bvh_nodes();
 
         Self {
             hittable_list,
@@ -134,6 +138,7 @@ impl Scene {
         let earth_surface = Material::new_lambertian(earth_texture);
         let globe = Sphere::new(Vec3::new(0.0, 0.0, 0.0), 2.0, earth_surface);
         hittable_list.add_sphere(globe);
+        hittable_list.init_bvh_nodes();
 
         Self {
             hittable_list,
@@ -162,6 +167,7 @@ impl Scene {
 
         let diffuse_light = Material::new_diffuse_light_color(Color::new(4.0, 4.0, 4.0));
         hittable_list.add_xy_rectangle(XyRectangle::new(diffuse_light, 3.0, 5.0, 1.0, 3.0, -2.0));
+        hittable_list.init_bvh_nodes();
 
         let mut camera = Camera::new(
             Vec3::new(26.0, 3.0, 6.0),
@@ -246,6 +252,7 @@ impl Scene {
             10.0,
         );
         camera.set_time(0.0, 1.0);
+        hittable_list.init_bvh_nodes();
 
         Self::new(hittable_list, camera, Color::black())
     }
@@ -338,6 +345,7 @@ fn fixed_big_scene() -> HittableWorld {
     world.add_sphere(Sphere::new(Vec3::new(-4.0, 1.0, 0.0), 1.0, material));
     let material = Material::new_metal(Color::new(0.7, 0.6, 0.5), 0.0);
     world.add_sphere(Sphere::new(Vec3::new(4.0, 1.0, 0.0), 1.0, material));
+    world.init_bvh_nodes();
 
     world
 }
@@ -404,6 +412,7 @@ fn random_hittable_list() -> HittableWorld {
     world.add_sphere(Sphere::new(Vec3::new(-4.0, 1.0, 0.0), 1.0, material));
     let material = Material::new_metal(Color::new(0.7, 0.6, 0.5), 0.0);
     world.add_sphere(Sphere::new(Vec3::new(4.0, 1.0, 0.0), 1.0, material));
+    world.init_bvh_nodes();
 
     world
 }

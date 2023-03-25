@@ -1,3 +1,4 @@
+use crate::geometry::aabb::Aabb;
 use crate::geometry::hit::{HitRecord, Hittable};
 use crate::geometry::xy_rectangle::XyRectangle;
 use crate::geometry::xz_rectangle::XzRectangle;
@@ -5,9 +6,10 @@ use crate::geometry::yz_rectangle::YzRectangle;
 use crate::material::Material;
 use crate::math::vec3::Vec3;
 use crate::ray::Ray;
-use tracy_full::zone;
 
 pub struct AabbBox {
+    box_min: Vec3,
+    box_max: Vec3,
     sides_xy: [XyRectangle; 2],
     sides_xz: [XzRectangle; 2],
     sides_yz: [YzRectangle; 2],
@@ -16,6 +18,8 @@ pub struct AabbBox {
 impl AabbBox {
     pub fn new(box_min: Vec3, box_max: Vec3, material: Material) -> Self {
         Self {
+            box_min,
+            box_max,
             sides_xy: [
                 XyRectangle::new(
                     material.clone(),
@@ -71,7 +75,6 @@ impl AabbBox {
 
 impl Hittable for AabbBox {
     fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
-        zone!();
         let mut record_option: Option<HitRecord> = None;
         let mut closest_distance = t_max;
 
@@ -100,5 +103,9 @@ impl Hittable for AabbBox {
         }
 
         record_option
+    }
+
+    fn bounding_box(&self, _: f32, _: f32) -> Option<Aabb> {
+        Some(Aabb::new(self.box_min, self.box_max))
     }
 }

@@ -1,4 +1,6 @@
+pub mod aabb;
 pub mod aabb_box;
+pub mod bvh;
 pub mod hit;
 pub mod hittable_world;
 pub mod moving_sphere;

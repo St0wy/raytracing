@@ -22,7 +22,7 @@ const FILE_DEFAULT_PATH: &str = "out.png";
 pub fn run_same_as_bench() {
     let start = Instant::now();
 
-    let scene = Scene::bench_three_sphere();
+    let scene = Scene::cornell_box();
     let pixels = render(&scene, IMAGE_WIDTH, IMAGE_HEIGHT);
 
     println!(
