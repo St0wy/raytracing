@@ -13,6 +13,7 @@ use crate::math::perlin::Perlin;
 use crate::texture::Texture;
 use glam::Vec3A;
 use rand::{Rng, SeedableRng};
+use rand_xoshiro::rand_core::RngCore;
 use tracy_full::zone;
 
 pub struct Scene {
@@ -44,9 +45,9 @@ impl Scene {
         Self::new(world, Camera::default(), Color::new(0.70, 0.80, 1.00))
     }
 
-    pub fn random() -> Self {
+    pub fn random(rng: &mut impl RngCore) -> Self {
         Self {
-            hittable_list: random_hittable_list(),
+            hittable_list: random_hittable_list(rng),
             camera: Camera::default(),
             background_color: Color::new(0.70, 0.80, 1.00),
         }
@@ -86,9 +87,9 @@ impl Scene {
         }
     }
 
-    pub fn two_perlin_spheres() -> Self {
+    pub fn two_perlin_spheres(rng: &mut impl RngCore) -> Self {
         let mut hittable_list = HittableWorld::new();
-        let perlin_texture = Texture::new_noise(Perlin::new(), 4.0);
+        let perlin_texture = Texture::new_noise(Perlin::new(rng), 4.0);
 
         hittable_list.add_sphere(Sphere::new(
             Vec3A::new(0.0, -1000.0, 0.0),
@@ -109,9 +110,9 @@ impl Scene {
         }
     }
 
-    pub fn perlin_and_earth() -> Self {
+    pub fn perlin_and_earth(rng: &mut impl RngCore) -> Self {
         let mut hittable_list = HittableWorld::new();
-        let perlin_texture = Texture::new_noise(Perlin::new(), 4.0);
+        let perlin_texture = Texture::new_noise(Perlin::new(rng), 4.0);
         let earth_texture =
             Texture::new_image("earthmap.png".to_string()).expect("Failed to load earth texture");
         let earth_surface = Material::new_lambertian(earth_texture);
@@ -147,10 +148,10 @@ impl Scene {
         }
     }
 
-    pub fn simple_light() -> Self {
+    pub fn simple_light(rng: &mut impl RngCore) -> Self {
         let mut hittable_list = HittableWorld::new();
 
-        let perlin_texture = Texture::new_noise(Perlin::new(), 4.0);
+        let perlin_texture = Texture::new_noise(Perlin::new(rng), 4.0);
         let ground = Sphere::new(
             Vec3A::new(0.0, -1000.0, 0.0),
             1000.0,
@@ -292,7 +293,7 @@ fn fixed_big_scene() -> HittableWorld {
         material_ground,
     ));
 
-    let mut rng = rand_chacha::ChaCha8Rng::seed_from_u64(10);
+    let mut rng = rand_xoshiro::Xoshiro256Plus::seed_from_u64(0);
 
     for a in -11..11 {
         for b in -11..11 {
@@ -306,8 +307,7 @@ fn fixed_big_scene() -> HittableWorld {
             if (center - Vec3A::new(4.0, 0.2, 0.0)).length() > 0.9 {
                 if choose_mat < 0.4 {
                     // Diffuse moving
-                    let albedo =
-                        Color::random_specific(&mut rng) * Color::random_specific(&mut rng);
+                    let albedo = Color::random(&mut rng) * Color::random(&mut rng);
                     let sphere_material = Material::new_lambertian_color(albedo);
                     let center2 = center + Vec3A::new(0.0, rng.gen_range(0.0..0.5), 0.0);
                     world.add_moving_sphere(MovingSphere::new(
@@ -320,13 +320,12 @@ fn fixed_big_scene() -> HittableWorld {
                     ));
                 } else if choose_mat < 0.8 {
                     // Diffuse not moving
-                    let albedo =
-                        Color::random_specific(&mut rng) * Color::random_specific(&mut rng);
+                    let albedo = Color::random(&mut rng) * Color::random(&mut rng);
                     let sphere_material = Material::new_lambertian_color(albedo);
                     world.add_sphere(Sphere::new(center, 0.2, sphere_material));
                 } else if choose_mat < 0.95 {
                     // Metal 🤘
-                    let albedo = Color::random_range_specific(0.5..1.0, &mut rng);
+                    let albedo = Color::random_range(0.5..1.0, &mut rng);
                     let fuzz = rng.gen_range(0.0..0.5);
                     let sphere_material = Material::new_metal(albedo, fuzz);
                     world.add_sphere(Sphere::new(center, 0.2, sphere_material));
@@ -350,7 +349,7 @@ fn fixed_big_scene() -> HittableWorld {
     world
 }
 
-fn random_hittable_list() -> HittableWorld {
+fn random_hittable_list(rng: &mut impl RngCore) -> HittableWorld {
     let mut world = HittableWorld::new();
 
     let material_ground = Material::new_lambertian_color(Color::new(0.5, 0.5, 0.5));
@@ -359,8 +358,6 @@ fn random_hittable_list() -> HittableWorld {
         1000.0,
         material_ground,
     ));
-
-    let mut rng = rand::thread_rng();
 
     for a in -11..11 {
         for b in -11..11 {
@@ -374,8 +371,7 @@ fn random_hittable_list() -> HittableWorld {
             if (center - Vec3A::new(4.0, 0.2, 0.0)).length() > 0.9 {
                 if choose_mat < 0.4 {
                     // Diffuse moving
-                    let albedo =
-                        Color::random_specific(&mut rng) * Color::random_specific(&mut rng);
+                    let albedo = Color::random(rng) * Color::random(rng);
                     let sphere_material = Material::new_lambertian_color(albedo);
                     let center2 = center + Vec3A::new(0.0, rng.gen_range(0.0..0.5), 0.0);
                     world.add_moving_sphere(MovingSphere::new(
@@ -388,12 +384,12 @@ fn random_hittable_list() -> HittableWorld {
                     ));
                 } else if choose_mat < 0.8 {
                     // Diffuse
-                    let albedo = Color::random() * Color::random();
+                    let albedo = Color::random(rng) * Color::random(rng);
                     let sphere_material = Material::new_lambertian_color(albedo);
                     world.add_sphere(Sphere::new(center, 0.2, sphere_material));
                 } else if choose_mat < 0.95 {
                     // Metal 🤘
-                    let albedo = Color::random_range(0.5..1.0);
+                    let albedo = Color::random_range(0.5..1.0, rng);
                     let fuzz = rng.gen_range(0.0..0.5);
                     let sphere_material = Material::new_metal(albedo, fuzz);
                     world.add_sphere(Sphere::new(center, 0.2, sphere_material));

@@ -9,6 +9,7 @@ use crate::geometry::xz_rectangle::XzRectangle;
 use crate::geometry::yz_rectangle::YzRectangle;
 use crate::ray::Ray;
 use rand::Rng;
+use rand_xoshiro::rand_core::SeedableRng;
 use std::cmp::Ordering;
 
 #[derive(Copy, Clone, Debug)]
@@ -23,7 +24,6 @@ impl HittableObjectIndex {
     }
 }
 
-#[derive(Default)]
 pub struct HittableWorld {
     spheres: Vec<Sphere>,
     moving_spheres: Vec<MovingSphere>,
@@ -33,6 +33,7 @@ pub struct HittableWorld {
     aabb_boxes: Vec<AabbBox>,
     bvh_nodes: Vec<BvhNode>,
     first_node_index: usize,
+    rng: rand_xoshiro::Xoshiro256Plus,
 }
 
 impl HittableWorld {
@@ -46,6 +47,7 @@ impl HittableWorld {
             aabb_boxes: Vec::new(),
             bvh_nodes: Vec::new(),
             first_node_index: 0,
+            rng: rand_xoshiro::Xoshiro256Plus::from_entropy(),
         }
     }
 
@@ -222,7 +224,7 @@ impl HittableWorld {
         time0: f32,
         time1: f32,
     ) -> HittableObjectIndex {
-        let axis = rand::thread_rng().gen_range(0..3) as usize;
+        let axis = self.rng.gen_range(0..3) as usize;
 
         let len = hittables.len();
         let (left, right) = match len {

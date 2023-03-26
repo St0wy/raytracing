@@ -1,6 +1,7 @@
 use crate::math::vec3::Vec3Ext;
 use glam::Vec3A;
 use rand::Rng;
+use rand_xoshiro::rand_core::RngCore;
 
 pub const POINT_COUNT: usize = 256;
 
@@ -13,17 +14,17 @@ pub struct Perlin {
 }
 
 impl Perlin {
-    pub fn new() -> Self {
+    pub fn new(rng: &mut impl RngCore) -> Self {
         let mut rand_vec = [Vec3A::ZERO; POINT_COUNT];
         for vec in rand_vec.iter_mut() {
-            *vec = Vec3A::random_range(-1.0..1.0).normalize();
+            *vec = Vec3A::random_range(-1.0..1.0, rng).normalize();
         }
 
         Self {
             rand_vec,
-            perm_x: Perlin::generate_perm(),
-            perm_y: Perlin::generate_perm(),
-            perm_z: Perlin::generate_perm(),
+            perm_x: Perlin::generate_perm(rng),
+            perm_y: Perlin::generate_perm(rng),
+            perm_z: Perlin::generate_perm(rng),
         }
     }
 
@@ -95,28 +96,21 @@ impl Perlin {
         accumulator
     }
 
-    fn generate_perm() -> [i32; POINT_COUNT] {
+    fn generate_perm(rng: &mut impl RngCore) -> [i32; POINT_COUNT] {
         let mut p = [0; POINT_COUNT];
         for (index, elem) in p.iter_mut().enumerate() {
             *elem = index as i32;
         }
 
-        Perlin::permute(&mut p);
+        Perlin::permute(&mut p, rng);
 
         p
     }
 
-    fn permute(p: &mut [i32; POINT_COUNT]) {
-        let mut rng = rand::thread_rng();
+    fn permute(p: &mut [i32; POINT_COUNT], rng: &mut impl RngCore) {
         for i in (0..p.len()).rev() {
             let target = if i == 0 { 0 } else { rng.gen_range(0..i) };
             p.swap(i, target);
         }
-    }
-}
-
-impl Default for Perlin {
-    fn default() -> Self {
-        Self::new()
     }
 }

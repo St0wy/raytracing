@@ -1,6 +1,7 @@
 use rand::distributions::Distribution;
 use rand::distributions::Uniform;
 use rand::Rng;
+use rand_xoshiro::rand_core::RngCore;
 use std::ops::{Add, AddAssign, Index, Mul, MulAssign, Range};
 
 #[derive(Default, Debug, Copy, Clone)]
@@ -23,21 +24,11 @@ impl Color {
         Self { x, y, z }
     }
 
-    pub fn random() -> Self {
-        let mut rng = rand::thread_rng();
-        Self::random_specific(&mut rng)
-    }
-
-    pub fn random_specific(rng: &mut impl Rng) -> Self {
+    pub fn random(rng: &mut impl RngCore) -> Self {
         Self::new(rng.gen(), rng.gen(), rng.gen())
     }
 
-    pub fn random_range(range: Range<f32>) -> Self {
-        let mut rng = rand::thread_rng();
-        Self::random_range_specific(range, &mut rng)
-    }
-
-    pub fn random_range_specific(range: Range<f32>, rng: &mut impl Rng) -> Self {
+    pub fn random_range(range: Range<f32>, rng: &mut impl RngCore) -> Self {
         let between = Uniform::from(range);
         Self::new(
             between.sample(rng),

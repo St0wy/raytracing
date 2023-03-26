@@ -3,6 +3,7 @@ use crate::math::vec3::Vec3Ext;
 use crate::ray::Ray;
 use glam::Vec3A;
 use rand::Rng;
+use rand_xoshiro::rand_core::RngCore;
 use tracy_full::zone;
 
 pub struct Camera {
@@ -66,16 +67,16 @@ impl Camera {
         cam
     }
 
-    pub fn get_ray(&self, s: f32, t: f32) -> Ray {
+    pub fn get_ray(&self, s: f32, t: f32, rng: &mut impl RngCore) -> Ray {
         zone!();
-        let rd = self.lens_radius * Vec3A::random_in_unit_circle();
+        let rd = self.lens_radius * Vec3A::random_in_unit_circle(rng);
         let offset = self.u * rd.x + self.v * rd.y;
 
         let mut ray = Ray::new(
             self.origin + offset,
             self.lower_left_corner + s * self.horizontal + t * self.vertical - self.origin - offset,
         );
-        let mut rng = rand::thread_rng();
+
         ray.time = rng.gen_range(self.time0..self.time1);
 
         ray

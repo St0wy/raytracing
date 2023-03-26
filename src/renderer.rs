@@ -1,4 +1,5 @@
 use rand::Rng;
+use rand_xoshiro::rand_core::{RngCore, SeedableRng};
 use rayon::prelude::*;
 
 use crate::consts::{MAX_DEPTH, SAMPLES_PER_PIXEL};
@@ -15,7 +16,12 @@ use crate::scene::Scene;
 /// * `hittable_list`: List of hittable objects to check the ray on.
 ///
 /// returns: Vec3
-fn ray_color(mut ray: Ray, background_color: &Color, hittable_list: &HittableWorld) -> Color {
+fn ray_color(
+    mut ray: Ray,
+    background_color: &Color,
+    hittable_list: &HittableWorld,
+    rng: &mut impl RngCore,
+) -> Color {
     let mut color = Color::white();
     let mut emitted = Color::black();
 
@@ -31,7 +37,7 @@ fn ray_color(mut ray: Ray, background_color: &Color, hittable_list: &HittableWor
             .emit(record.u(), record.v(), record.point());
         emitted += color * emit;
 
-        let scatter = record.material().scatter(&ray, &record);
+        let scatter = record.material().scatter(&ray, &record, rng);
         if scatter.is_none() {
             return emitted;
         }
@@ -53,17 +59,21 @@ pub fn render(scene: &Scene, image_width: usize, image_height: usize) -> Vec<u8>
         .into_par_iter()
         .rev()
         .flat_map(|j| {
+            let mut rng = rand_xoshiro::Xoshiro256Plus::from_entropy();
             (0..image_width)
                 .flat_map(|i| {
                     let mut pixel_color = Color::black();
                     for _ in 0..SAMPLES_PER_PIXEL {
-                        let mut rng = rand::thread_rng();
                         let u = (i as f32 + rng.gen::<f32>()) / (image_width as f32 - 1.0);
                         let v = (j as f32 + rng.gen::<f32>()) / (image_height as f32 - 1.0);
-                        let ray = scene.camera().get_ray(u, v);
+                        let ray = scene.camera().get_ray(u, v, &mut rng);
 
-                        pixel_color +=
-                            ray_color(ray, scene.background_color(), scene.hittable_list());
+                        pixel_color += ray_color(
+                            ray,
+                            scene.background_color(),
+                            scene.hittable_list(),
+                            &mut rng,
+                        );
                     }
 
                     const SCALE: f32 = 1.0 / SAMPLES_PER_PIXEL as f32;

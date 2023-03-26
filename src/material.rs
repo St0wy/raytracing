@@ -5,6 +5,7 @@ use crate::ray::Ray;
 use crate::texture::Texture;
 use glam::Vec3A;
 use rand::Rng;
+use rand_xoshiro::rand_core::RngCore;
 use tracy_full::zone;
 
 #[derive(Default)]
@@ -60,13 +61,18 @@ impl Material {
         }
     }
 
-    pub fn scatter(&self, ray_in: &Ray, record: &HitRecord) -> Option<ScatterResult> {
+    pub fn scatter(
+        &self,
+        ray_in: &Ray,
+        record: &HitRecord,
+        rng: &mut impl RngCore,
+    ) -> Option<ScatterResult> {
         zone!();
         match self {
-            Material::Lambertian { albedo } => scatter_lambertian(albedo, ray_in, record),
-            Material::Metal { albedo, fuzz } => scatter_metal(albedo, *fuzz, ray_in, record),
+            Material::Lambertian { albedo } => scatter_lambertian(albedo, ray_in, record, rng),
+            Material::Metal { albedo, fuzz } => scatter_metal(albedo, *fuzz, ray_in, record, rng),
             Material::Dielectric { refraction_index } => {
-                scatter_dielectrics(*refraction_index, ray_in, record)
+                scatter_dielectrics(*refraction_index, ray_in, record, rng)
             }
             Material::DiffuseLight { emit: _ } => None,
         }
@@ -81,8 +87,13 @@ impl Material {
     }
 }
 
-fn scatter_lambertian(albedo: &Texture, ray_in: &Ray, record: &HitRecord) -> Option<ScatterResult> {
-    let mut scatter_direction = record.normal() + Vec3A::random_unit_normalized();
+fn scatter_lambertian(
+    albedo: &Texture,
+    ray_in: &Ray,
+    record: &HitRecord,
+    rng: &mut impl RngCore,
+) -> Option<ScatterResult> {
+    let mut scatter_direction = record.normal() + Vec3A::random_unit_normalized(rng);
     if scatter_direction.is_near_zero() {
         scatter_direction = record.normal();
     }
@@ -99,12 +110,13 @@ fn scatter_metal(
     fuzz: f32,
     ray_in: &Ray,
     record: &HitRecord,
+    rng: &mut impl RngCore,
 ) -> Option<ScatterResult> {
     let reflected = ray_in.direction().normalize().reflect(record.normal());
 
     let mut scattered = Ray::new(
         record.point(),
-        reflected + fuzz * Vec3A::random_in_unit_sphere(),
+        reflected + fuzz * Vec3A::random_in_unit_sphere(rng),
     );
     scattered.time = ray_in.time;
 
@@ -119,6 +131,7 @@ fn scatter_dielectrics(
     refraction_index: f32,
     ray_in: &Ray,
     record: &HitRecord,
+    rng: &mut impl RngCore,
 ) -> Option<ScatterResult> {
     let attenuation = Color::white();
     let refraction_ratio = if record.front_face() {
@@ -133,7 +146,7 @@ fn scatter_dielectrics(
 
     let cannot_refract = refraction_ratio * sin_theta > 1.0;
     let reflectance = reflectance(cos_theta, refraction_ratio);
-    let mut rng = rand::thread_rng();
+
     let direction = if cannot_refract || reflectance > rng.gen() {
         unit_direction.reflect(record.normal())
     } else {

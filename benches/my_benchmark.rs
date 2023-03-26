@@ -1,4 +1,5 @@
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use rand_xoshiro::rand_core::SeedableRng;
 use raytracing::consts::*;
 use raytracing::renderer::render;
 use raytracing::scene::Scene;
@@ -34,7 +35,8 @@ fn bench_cornell_box(c: &mut Criterion) {
 }
 
 fn bench_perlin_and_earth(c: &mut Criterion) {
-    let scene = Scene::perlin_and_earth();
+    let mut rng = rand_xoshiro::Xoshiro256Plus::seed_from_u64(0);
+    let scene = Scene::perlin_and_earth(&mut rng);
 
     c.bench_function("render perlin_and_earth", |b| {
         b.iter(|| {
