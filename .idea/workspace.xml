@@ -15,20 +15,7 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5d57bb42-7a3c-4d47-af3f-38b6573f1724" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benches/my_benchmark.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/my_benchmark.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/camera.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/camera.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/geometry/hittable_world.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/hittable_world.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/material.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/material.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/math/color.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/math/color.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/math/perlin.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/math/perlin.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/math/vec3.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/math/vec3.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/scene.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene.rs" afterDir="false" />
-    </list>
+    <list default="true" id="5d57bb42-7a3c-4d47-af3f-38b6573f1724" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
