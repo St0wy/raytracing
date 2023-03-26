@@ -1,6 +1,6 @@
 use crate::math::color::Color;
 use crate::math::perlin::Perlin;
-use crate::math::vec3::Vec3;
+use glam::Vec3A;
 use std::fs::File;
 use tracy_full::zone;
 
@@ -78,7 +78,7 @@ impl Texture {
         })
     }
 
-    pub fn value(&self, u: f32, v: f32, p: &Vec3) -> Color {
+    pub fn value(&self, u: f32, v: f32, p: Vec3A) -> Color {
         zone!();
         match self {
             Texture::SolidColor(color) => *color,
@@ -93,7 +93,7 @@ impl Texture {
             Texture::Noise { noise, scale } => {
                 Color::white()
                     * 0.5
-                    * (1.0 + f32::sin(scale * p.z + 10.0 * noise.turbulence(*p, None)))
+                    * (1.0 + f32::sin(scale * p.z + 10.0 * noise.turbulence(p, None)))
             }
             Texture::Image {
                 data,

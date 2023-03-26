@@ -350,21 +350,21 @@ mod tests {
     use crate::geometry::hittable_world::HittableWorld;
     use crate::geometry::sphere::Sphere;
     use crate::material::Material;
-    use crate::math::vec3::Vec3;
     use crate::ray::Ray;
+    use glam::Vec3A;
 
     #[test]
     fn hittable_world_hit_with_one_object() {
         let mut hittable_list = HittableWorld::new();
         let sphere = Sphere::new(
-            Vec3::new(0.0, 0.0, 10.0),
+            Vec3A::new(0.0, 0.0, 10.0),
             3.0,
             Material::new_dielectric(0.0),
         );
         hittable_list.add_sphere(sphere);
         hittable_list.init_bvh_nodes();
 
-        let ray = Ray::new(Vec3::zero(), Vec3::forward());
+        let ray = Ray::new(Vec3A::ZERO, Vec3A::Y);
         let result = hittable_list.hit_no_limit(&ray);
 
         assert!(result.is_some());

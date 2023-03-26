@@ -1,11 +1,12 @@
-use crate::material::Material;
-use crate::{math::vec3::*, ray::Ray};
 use crate::geometry::aabb::Aabb;
+use crate::material::Material;
+use crate::ray::Ray;
+use glam::Vec3A;
 
 #[derive(Debug)]
 pub struct HitRecord<'a> {
-    point: Vec3,
-    normal: Vec3,
+    point: Vec3A,
+    normal: Vec3A,
     t: f32,
     u: f32,
     v: f32,
@@ -15,15 +16,15 @@ pub struct HitRecord<'a> {
 
 impl<'a> HitRecord<'a> {
     pub fn new(
-        point: Vec3,
+        point: Vec3A,
         t: f32,
         u: f32,
         v: f32,
-        outward_normal: Vec3,
-        ray_direction: &Vec3,
+        outward_normal: Vec3A,
+        ray_direction: &Vec3A,
         material: &'a Material,
     ) -> Self {
-        let front_face = ray_direction.dot(&outward_normal) < 0.0;
+        let front_face = ray_direction.dot(outward_normal) < 0.0;
         let normal = if front_face {
             outward_normal
         } else {
@@ -41,12 +42,12 @@ impl<'a> HitRecord<'a> {
         }
     }
 
-    pub fn normal(&self) -> &Vec3 {
-        &self.normal
+    pub fn normal(&self) -> Vec3A {
+        self.normal
     }
 
-    pub fn point(&self) -> &Vec3 {
-        &self.point
+    pub fn point(&self) -> Vec3A {
+        self.point
     }
 
     pub fn material(&self) -> &Material {

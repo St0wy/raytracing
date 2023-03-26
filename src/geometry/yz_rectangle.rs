@@ -1,8 +1,8 @@
 use crate::geometry::aabb::Aabb;
 use crate::geometry::hit::{HitRecord, Hittable};
 use crate::material::Material;
-use crate::math::vec3::Vec3;
 use crate::ray::Ray;
+use glam::Vec3A;
 use tracy_full::zone;
 
 pub struct YzRectangle {
@@ -43,7 +43,7 @@ impl Hittable for YzRectangle {
 
         let u = (y - self.y0) / (self.y1 - self.y0);
         let v = (z - self.z0) / (self.z1 - self.z0);
-        let outward_normal = Vec3::new(1.0, 0.0, 0.0);
+        let outward_normal = Vec3A::new(1.0, 0.0, 0.0);
 
         Some(HitRecord::new(
             ray.at(t),
@@ -58,8 +58,8 @@ impl Hittable for YzRectangle {
 
     fn bounding_box(&self, _: f32, _: f32) -> Option<Aabb> {
         Some(Aabb::new(
-            Vec3::new(self.k - 0.0001, self.y0, self.z0),
-            Vec3::new(self.k + 0.0001, self.y1, self.z1),
+            Vec3A::new(self.k - 0.0001, self.y0, self.z0),
+            Vec3A::new(self.k + 0.0001, self.y1, self.z1),
         ))
     }
 }

@@ -1,27 +1,27 @@
-use crate::math::vec3::Vec3;
 use crate::ray::Ray;
+use glam::Vec3A;
 use tracy_full::zone;
 
 #[derive(Clone, Debug)]
 pub struct Aabb {
-    minimum: Vec3,
-    maximum: Vec3,
+    minimum: Vec3A,
+    maximum: Vec3A,
 }
 
 impl Aabb {
-    pub const fn new(minimum: Vec3, maximum: Vec3) -> Self {
+    pub const fn new(minimum: Vec3A, maximum: Vec3A) -> Self {
         Self { minimum, maximum }
     }
 
     pub const fn empty() -> Self {
-        Self::new(Vec3::zero(), Vec3::zero())
+        Self::new(Vec3A::ZERO, Vec3A::ZERO)
     }
 
-    pub const fn min(&self) -> Vec3 {
+    pub const fn min(&self) -> Vec3A {
         self.minimum
     }
 
-    pub const fn max(&self) -> Vec3 {
+    pub const fn max(&self) -> Vec3A {
         self.maximum
     }
 
@@ -60,13 +60,13 @@ impl Aabb {
     }
 
     pub fn surrounding_box(box0: Self, box1: Self) -> Self {
-        let small = Vec3::new(
+        let small = Vec3A::new(
             box0.min().x.min(box1.min().x),
             box0.min().y.min(box1.min().y),
             box0.min().z.min(box1.min().z),
         );
 
-        let big = Vec3::new(
+        let big = Vec3A::new(
             box0.max().x.max(box1.max().x),
             box0.max().y.max(box1.max().y),
             box0.max().z.max(box1.max().z),

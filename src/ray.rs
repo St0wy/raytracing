@@ -1,9 +1,9 @@
-use crate::math::vec3::*;
+use glam::Vec3A;
 
 #[derive(Debug, Copy, Clone, Default)]
 pub struct Ray {
-    origin: Vec3,
-    direction: Vec3,
+    origin: Vec3A,
+    direction: Vec3A,
     pub time: f32,
 }
 
@@ -20,13 +20,13 @@ impl Ray {
     /// # Examples
     ///
     /// ```
-    /// use raytracing::math::vec3::*;
+    /// use glam::Vec3A;
     /// use raytracing::ray::Ray;
-    /// let ray = Ray::new(Vec3::new(0.0, 0.0, 0.0), Vec3::new(1.0, 0.0, 0.0));
-    /// assert_eq!(ray.origin(), Vec3::new(0.0, 0.0, 0.0));
-    /// assert_eq!(ray.direction(), Vec3::new(1.0, 0.0, 0.0));
+    /// let ray = Ray::new(Vec3A::new(0.0, 0.0, 0.0), Vec3A::new(1.0, 0.0, 0.0));
+    /// assert_eq!(ray.origin(), Vec3A::new(0.0, 0.0, 0.0));
+    /// assert_eq!(ray.direction(), Vec3A::new(1.0, 0.0, 0.0));
     /// ```
-    pub fn new(origin: Vec3, direction: Vec3) -> Self {
+    pub fn new(origin: Vec3A, direction: Vec3A) -> Self {
         Self {
             origin,
             direction,
@@ -34,11 +34,11 @@ impl Ray {
         }
     }
 
-    pub fn origin(&self) -> Vec3 {
+    pub fn origin(&self) -> Vec3A {
         self.origin
     }
 
-    pub fn direction(&self) -> Vec3 {
+    pub fn direction(&self) -> Vec3A {
         self.direction
     }
 
@@ -48,17 +48,17 @@ impl Ray {
     ///
     /// * `t`: Distance to the origin of the ray.
     ///
-    /// returns: Vec3
+    /// returns: Vec3A
     ///
     /// # Examples
     ///
     /// ```
-    /// use raytracing::math::vec3::*;
+    /// use glam::Vec3A;
     /// use raytracing::ray::Ray;
-    /// let ray = Ray::new(Vec3::new(1.0, 0.0, 0.0), Vec3::new(1.0, 0.0, 0.0));
-    /// assert_eq!(ray.at(3.0), Vec3::new(4.0, 0.0, 0.0));
+    /// let ray = Ray::new(Vec3A::new(1.0, 0.0, 0.0), Vec3A::new(1.0, 0.0, 0.0));
+    /// assert_eq!(ray.at(3.0), Vec3A::new(4.0, 0.0, 0.0));
     /// ```
-    pub fn at(&self, t: f32) -> Vec3 {
+    pub fn at(&self, t: f32) -> Vec3A {
         self.origin + t * self.direction
     }
 }

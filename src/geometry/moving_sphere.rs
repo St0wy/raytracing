@@ -1,14 +1,15 @@
 use crate::geometry::aabb::Aabb;
 use crate::geometry::sphere::Sphere;
 use crate::material::Material;
-use crate::{math::vec3::*, ray::Ray};
+use crate::ray::Ray;
+use glam::Vec3A;
 use tracy_full::zone;
 
 use super::hit::{HitRecord, Hittable};
 
 pub struct MovingSphere {
-    center0: Vec3,
-    center1: Vec3,
+    center0: Vec3A,
+    center1: Vec3A,
     time0: f32,
     time1: f32,
     radius: f32,
@@ -21,9 +22,9 @@ impl Hittable for MovingSphere {
         let center = self.center(ray.time);
         let oc = ray.origin() - center;
         let direction = ray.direction();
-        let a = direction.squared_magnitude();
-        let half_b = oc.dot(&direction);
-        let c = oc.squared_magnitude() - self.radius * self.radius;
+        let a = direction.length_squared();
+        let half_b = oc.dot(direction);
+        let c = oc.length_squared() - self.radius * self.radius;
 
         let discriminant = half_b * half_b - a * c;
         if discriminant < 0.0 {
@@ -56,7 +57,7 @@ impl Hittable for MovingSphere {
     }
 
     fn bounding_box(&self, time0: f32, time1: f32) -> Option<Aabb> {
-        let radius_vec = Vec3::new(self.radius, self.radius, self.radius);
+        let radius_vec = Vec3A::new(self.radius, self.radius, self.radius);
         let box0 = Aabb::new(
             self.center(time0) - radius_vec,
             self.center(time0) + radius_vec,
@@ -73,8 +74,8 @@ impl Hittable for MovingSphere {
 
 impl MovingSphere {
     pub fn new(
-        center0: Vec3,
-        center1: Vec3,
+        center0: Vec3A,
+        center1: Vec3A,
         time0: f32,
         time1: f32,
         radius: f32,
@@ -90,7 +91,7 @@ impl MovingSphere {
         }
     }
 
-    pub fn center(&self, time: f32) -> Vec3 {
+    pub fn center(&self, time: f32) -> Vec3A {
         self.center0
             + ((time - self.time0) / (self.time1 - self.time0)) * (self.center1 - self.center0)
     }

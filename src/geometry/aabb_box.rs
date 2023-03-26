@@ -4,19 +4,19 @@ use crate::geometry::xy_rectangle::XyRectangle;
 use crate::geometry::xz_rectangle::XzRectangle;
 use crate::geometry::yz_rectangle::YzRectangle;
 use crate::material::Material;
-use crate::math::vec3::Vec3;
 use crate::ray::Ray;
+use glam::Vec3A;
 
 pub struct AabbBox {
-    box_min: Vec3,
-    box_max: Vec3,
+    box_min: Vec3A,
+    box_max: Vec3A,
     sides_xy: [XyRectangle; 2],
     sides_xz: [XzRectangle; 2],
     sides_yz: [YzRectangle; 2],
 }
 
 impl AabbBox {
-    pub fn new(box_min: Vec3, box_max: Vec3, material: Material) -> Self {
+    pub fn new(box_min: Vec3A, box_max: Vec3A, material: Material) -> Self {
         Self {
             box_min,
             box_max,

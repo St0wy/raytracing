@@ -17,7 +17,26 @@
   <component name="ChangeListManager">
     <list default="true" id="5d57bb42-7a3c-4d47-af3f-38b6573f1724" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/camera.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/camera.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/geometry/aabb.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/aabb.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/geometry/aabb_box.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/aabb_box.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/geometry/hit.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/hit.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/geometry/hittable_world.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/hittable_world.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/geometry/moving_sphere.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/moving_sphere.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/geometry/sphere.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/sphere.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/geometry/xy_rectangle.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/xy_rectangle.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/geometry/xz_rectangle.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/xz_rectangle.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/geometry/yz_rectangle.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/yz_rectangle.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/material.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/material.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/math/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/math/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/math/perlin.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/math/perlin.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/math/utils.rs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/math/vec3.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/math/vec3.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ray.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scene.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/texture.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/texture.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

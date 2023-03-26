@@ -1,8 +1,9 @@
 use crate::geometry::hit::HitRecord;
 use crate::math::color::Color;
-use crate::math::vec3::Vec3;
+use crate::math::vec3::Vec3Ext;
 use crate::ray::Ray;
 use crate::texture::Texture;
+use glam::Vec3A;
 use rand::Rng;
 use tracy_full::zone;
 
@@ -71,7 +72,7 @@ impl Material {
         }
     }
 
-    pub fn emit(&self, u: f32, v: f32, point: &Vec3) -> Color {
+    pub fn emit(&self, u: f32, v: f32, point: Vec3A) -> Color {
         zone!();
         match self {
             Self::DiffuseLight { emit } => emit.value(u, v, point),
@@ -81,12 +82,12 @@ impl Material {
 }
 
 fn scatter_lambertian(albedo: &Texture, ray_in: &Ray, record: &HitRecord) -> Option<ScatterResult> {
-    let mut scatter_direction = *record.normal() + Vec3::random_unit_normalized();
+    let mut scatter_direction = record.normal() + Vec3A::random_unit_normalized();
     if scatter_direction.is_near_zero() {
-        scatter_direction = *record.normal();
+        scatter_direction = record.normal();
     }
 
-    let mut scattered = Ray::new(*record.point(), scatter_direction);
+    let mut scattered = Ray::new(record.point(), scatter_direction);
     scattered.time = ray_in.time;
     let attenuation = albedo.value(record.u(), record.v(), record.point());
 
@@ -99,11 +100,11 @@ fn scatter_metal(
     ray_in: &Ray,
     record: &HitRecord,
 ) -> Option<ScatterResult> {
-    let reflected = ray_in.direction().to_unit().reflect(record.normal());
+    let reflected = ray_in.direction().normalize().reflect(record.normal());
 
     let mut scattered = Ray::new(
-        *record.point(),
-        reflected + fuzz * Vec3::random_in_unit_sphere(),
+        record.point(),
+        reflected + fuzz * Vec3A::random_in_unit_sphere(),
     );
     scattered.time = ray_in.time;
 
@@ -126,7 +127,7 @@ fn scatter_dielectrics(
         refraction_index
     };
 
-    let unit_direction = ray_in.direction().to_unit();
+    let unit_direction = ray_in.direction().normalize();
     let cos_theta = (-unit_direction).dot(record.normal()).min(1.0);
     let sin_theta = (1.0 - cos_theta * cos_theta).sqrt();
 
@@ -139,7 +140,7 @@ fn scatter_dielectrics(
         unit_direction.refract(record.normal(), refraction_ratio)
     };
 
-    let mut scattered = Ray::new(*record.point(), direction);
+    let mut scattered = Ray::new(record.point(), direction);
     scattered.time = ray_in.time;
 
     Some(ScatterResult::new(attenuation, scattered))

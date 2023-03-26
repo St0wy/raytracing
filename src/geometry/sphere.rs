@@ -1,19 +1,20 @@
 use crate::geometry::aabb::Aabb;
 use crate::material::Material;
-use crate::{math::vec3::*, ray::Ray};
+use crate::ray::Ray;
+use glam::Vec3A;
 use std::f32::consts::PI;
 use tracy_full::zone;
 
 use super::hit::{HitRecord, Hittable};
 
 pub struct Sphere {
-    center: Vec3,
+    center: Vec3A,
     radius: f32,
     material: Material,
 }
 
 impl Sphere {
-    pub fn new(center: Vec3, radius: f32, material: Material) -> Self {
+    pub fn new(center: Vec3A, radius: f32, material: Material) -> Self {
         Self {
             center,
             radius,
@@ -21,7 +22,7 @@ impl Sphere {
         }
     }
 
-    pub fn get_sphere_uv(p: &Vec3) -> (f32, f32) {
+    pub fn get_sphere_uv(p: &Vec3A) -> (f32, f32) {
         let theta = f32::acos(-p.y);
         let phi = f32::atan2(-p.z, p.x) + PI;
 
@@ -34,9 +35,9 @@ impl Hittable for Sphere {
         zone!();
         let oc = ray.origin() - self.center;
         let direction = ray.direction();
-        let a = direction.squared_magnitude();
-        let half_b = oc.dot(&direction);
-        let c = oc.squared_magnitude() - self.radius * self.radius;
+        let a = direction.length_squared();
+        let half_b = oc.dot(direction);
+        let c = oc.length_squared() - self.radius * self.radius;
 
         let discriminant = half_b * half_b - a * c;
         if discriminant < 0.0 {
@@ -69,7 +70,7 @@ impl Hittable for Sphere {
     }
 
     fn bounding_box(&self, _: f32, _: f32) -> Option<Aabb> {
-        let radius_vec = Vec3::new(self.radius, self.radius, self.radius);
+        let radius_vec = Vec3A::new(self.radius, self.radius, self.radius);
 
         Some(Aabb::new(
             self.center - radius_vec,
