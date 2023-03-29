@@ -1,3 +1,5 @@
+use gpu_raytracing::render;
+
 fn main() {
-    println!("Hello, world!");
+    pollster::block_on(render());
 }
