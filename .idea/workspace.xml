@@ -16,7 +16,39 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5d57bb42-7a3c-4d47-af3f-38b6573f1724" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/cpu_raytracing/Cargo.toml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gpu_raytracing/Cargo.toml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gpu_raytracing/src/main.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/raytracing.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/raytracing.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/benches/my_benchmark.rs" beforeDir="false" afterPath="$PROJECT_DIR$/cpu_raytracing/benches/my_benchmark.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/earthmap.png" beforeDir="false" afterPath="$PROJECT_DIR$/cpu_raytracing/earthmap.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/camera.rs" beforeDir="false" afterPath="$PROJECT_DIR$/cpu_raytracing/src/camera.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/consts.rs" beforeDir="false" afterPath="$PROJECT_DIR$/cpu_raytracing/src/consts.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/geometry/aabb.rs" beforeDir="false" afterPath="$PROJECT_DIR$/cpu_raytracing/src/geometry/aabb.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/geometry/aabb_box.rs" beforeDir="false" afterPath="$PROJECT_DIR$/cpu_raytracing/src/geometry/aabb_box.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/geometry/bvh.rs" beforeDir="false" afterPath="$PROJECT_DIR$/cpu_raytracing/src/geometry/bvh.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/geometry/hit.rs" beforeDir="false" afterPath="$PROJECT_DIR$/cpu_raytracing/src/geometry/hit.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/geometry/hittable_world.rs" beforeDir="false" afterPath="$PROJECT_DIR$/cpu_raytracing/src/geometry/hittable_world.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/geometry/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/cpu_raytracing/src/geometry/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/geometry/moving_sphere.rs" beforeDir="false" afterPath="$PROJECT_DIR$/cpu_raytracing/src/geometry/moving_sphere.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/geometry/sphere.rs" beforeDir="false" afterPath="$PROJECT_DIR$/cpu_raytracing/src/geometry/sphere.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/geometry/xy_rectangle.rs" beforeDir="false" afterPath="$PROJECT_DIR$/cpu_raytracing/src/geometry/xy_rectangle.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/geometry/xz_rectangle.rs" beforeDir="false" afterPath="$PROJECT_DIR$/cpu_raytracing/src/geometry/xz_rectangle.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/geometry/yz_rectangle.rs" beforeDir="false" afterPath="$PROJECT_DIR$/cpu_raytracing/src/geometry/yz_rectangle.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/cpu_raytracing/src/lib.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/cpu_raytracing/src/main.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/material.rs" beforeDir="false" afterPath="$PROJECT_DIR$/cpu_raytracing/src/material.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/math/color.rs" beforeDir="false" afterPath="$PROJECT_DIR$/cpu_raytracing/src/math/color.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/math/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/cpu_raytracing/src/math/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/math/perlin.rs" beforeDir="false" afterPath="$PROJECT_DIR$/cpu_raytracing/src/math/perlin.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/math/vec3.rs" beforeDir="false" afterPath="$PROJECT_DIR$/cpu_raytracing/src/math/vec3.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ray.rs" beforeDir="false" afterPath="$PROJECT_DIR$/cpu_raytracing/src/ray.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/renderer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/cpu_raytracing/src/renderer.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scene.rs" beforeDir="false" afterPath="$PROJECT_DIR$/cpu_raytracing/src/scene.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/texture.rs" beforeDir="false" afterPath="$PROJECT_DIR$/cpu_raytracing/src/texture.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,49 +88,37 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
-    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/dev/rust/raytracing&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.standard&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.standard&quot;: &quot;&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;org.rust.cargo.project.model.PROJECT_DISCOVERY&quot;: &quot;true&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;language.rust.cargo.check&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "last_opened_file_path": "C:/dev/rust/raytracing",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.standard": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.standard": "",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "org.rust.cargo.project.model.PROJECT_DISCOVERY": "true",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "terminal",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
-  <component name="RunManager" selected="Cargo.Test geometry::hittable_world::tests::hittable_world_hit_with_one_object">
-    <configuration name="Run Release" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
-      <option name="command" value="run --release" />
-      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
-      <option name="emulateTerminal" value="true" />
-      <option name="channel" value="DEFAULT" />
-      <option name="requiredFeatures" value="true" />
-      <option name="allFeatures" value="false" />
-      <option name="withSudo" value="false" />
-      <option name="buildTarget" value="REMOTE" />
-      <option name="backtrace" value="SHORT" />
-      <envs />
-      <option name="isRedirectInput" value="false" />
-      <option name="redirectInputPath" value="" />
-      <method v="2">
-        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command" nameIsGenerated="true">
-      <option name="command" value="run" />
+}]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\dev\rust\raytracing\cpu_raytracing" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Cargo.Run CPU Release">
+    <configuration name="Run CPU Release" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
+      <option name="command" value="run --bin cpu_raytracing --release" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="emulateTerminal" value="false" />
       <option name="channel" value="DEFAULT" />
@@ -114,8 +134,42 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Test geometry::hittable_world::tests::hittable_world_hit_with_one_object" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="test --package raytracing --lib geometry::hittable_world::tests::hittable_world_hit_with_one_object -- --exact" />
+    <configuration name="Run CPU" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
+      <option name="command" value="run --bin cpu_raytracing" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <option name="emulateTerminal" value="false" />
+      <option name="channel" value="DEFAULT" />
+      <option name="requiredFeatures" value="true" />
+      <option name="allFeatures" value="false" />
+      <option name="withSudo" value="false" />
+      <option name="buildTarget" value="REMOTE" />
+      <option name="backtrace" value="SHORT" />
+      <envs />
+      <option name="isRedirectInput" value="false" />
+      <option name="redirectInputPath" value="" />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Run GPU Release" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
+      <option name="command" value="run --bin gpu_raytracing --release" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <option name="emulateTerminal" value="false" />
+      <option name="channel" value="DEFAULT" />
+      <option name="requiredFeatures" value="true" />
+      <option name="allFeatures" value="false" />
+      <option name="withSudo" value="false" />
+      <option name="buildTarget" value="REMOTE" />
+      <option name="backtrace" value="SHORT" />
+      <envs />
+      <option name="isRedirectInput" value="false" />
+      <option name="redirectInputPath" value="" />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Run GPU" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
+      <option name="command" value="run --bin gpu_raytracing" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="emulateTerminal" value="false" />
       <option name="channel" value="DEFAULT" />
@@ -132,15 +186,11 @@
       </method>
     </configuration>
     <list>
-      <item itemvalue="Cargo.Run" />
-      <item itemvalue="Cargo.Run Release" />
-      <item itemvalue="Cargo.Test geometry::hittable_world::tests::hittable_world_hit_with_one_object" />
+      <item itemvalue="Cargo.Run CPU" />
+      <item itemvalue="Cargo.Run CPU Release" />
+      <item itemvalue="Cargo.Run GPU" />
+      <item itemvalue="Cargo.Run GPU Release" />
     </list>
-    <recent_temporary>
-      <list>
-        <item itemvalue="Cargo.Test geometry::hittable_world::tests::hittable_world_hit_with_one_object" />
-      </list>
-    </recent_temporary>
   </component>
   <component name="RustProjectSettings">
     <option name="externalLinter" value="Clippy" />

@@ -1,4 +1,4 @@
-use raytracing::run_same_as_bench;
+use cpu_raytracing::run_same_as_bench;
 use tracy_full::alloc::GlobalAllocator;
 
 #[global_allocator]

@@ -1,0 +1,36 @@
+[package]
+name = "cpu_raytracing"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+human-time = "0.1.6"
+indicatif = { version = "0.17.3", features = ["rayon"] }
+png = "0.17.7"
+rand = "0.8.5"
+rand_xoshiro = "0.6.0"
+rayon = "1.7.0"
+
+[dependencies.glam]
+version = "0.23.0"
+features = ["fast-math", "core-simd"]
+
+[dependencies.tracy_full]
+version = "1.4.0"
+#features = ["enable", "unstable"]
+
+[dev-dependencies]
+criterion = "0.4"
+
+[[bench]]
+name = "my_benchmark"
+harness = false
+
+# Disable rust bench because this project uses criterion
+[lib]
+bench = false
+
+[[bin]]
+name = "cpu_raytracing"
+path = "src/main.rs"
+bench = false
