@@ -19,7 +19,7 @@ use crate::scene::Scene;
 
 const FILE_DEFAULT_PATH: &str = "out.png";
 
-pub fn run_same_as_bench() {
+pub fn run() {
     let start = Instant::now();
 
     let scene = Scene::big_scene();
