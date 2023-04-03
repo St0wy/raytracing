@@ -1,3 +1,5 @@
+use std::time::Duration;
+
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use rand_xoshiro::rand_core::SeedableRng;
 use raytracing::consts::*;
@@ -47,7 +49,7 @@ fn bench_perlin_and_earth(c: &mut Criterion) {
 
 criterion_group! {
     name = benches;
-    config = Criterion::default().sample_size(10);
+    config = Criterion::default().measurement_time(Duration::new(80, 0));
     targets = bench_three_spheres, bench_big_scene, bench_cornell_box, bench_perlin_and_earth
 }
 criterion_main!(benches);
