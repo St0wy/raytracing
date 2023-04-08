@@ -13,7 +13,7 @@ impl HittableWorld {
         }
     }
 
-    pub fn add_hittable<T: Hittable + 'static>(&mut self, hittable: T) {
+    pub fn add_hittable(&mut self, hittable: impl Hittable + 'static) {
         self.hittables.push(Box::new(hittable));
     }
 
