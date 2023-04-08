@@ -16,13 +16,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5d57bb42-7a3c-4d47-af3f-38b6573f1724" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/gpu_raytracing/src/lib.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gpu_raytracing/src/shader.wgsl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/raytracing.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/raytracing.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cpu_raytracing/src/consts.rs" beforeDir="false" afterPath="$PROJECT_DIR$/cpu_raytracing/src/consts.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gpu_raytracing/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/gpu_raytracing/Cargo.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gpu_raytracing/src/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/gpu_raytracing/src/main.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/benches/my_benchmark.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/my_benchmark.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/consts.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/consts.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scene.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,6 +70,7 @@
     "WebServerToolWindowFactoryState": "false",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
+    "git-widget-placeholder": "main",
     "last_opened_file_path": "C:/dev/rust/raytracing",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.standard": "true",
@@ -90,9 +90,9 @@
       <recent name="C:\dev\rust\raytracing\cpu_raytracing" />
     </key>
   </component>
-  <component name="RunManager" selected="Cargo.Run GPU">
-    <configuration name="Run CPU Release" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
-      <option name="command" value="run --bin cpu_raytracing --release" />
+  <component name="RunManager" selected="Cargo.Run Release">
+    <configuration name="Run Release" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
+      <option name="command" value="run --release" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="emulateTerminal" value="false" />
       <option name="channel" value="DEFAULT" />
@@ -108,42 +108,8 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Run CPU" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
-      <option name="command" value="run --bin cpu_raytracing" />
-      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
-      <option name="emulateTerminal" value="false" />
-      <option name="channel" value="DEFAULT" />
-      <option name="requiredFeatures" value="true" />
-      <option name="allFeatures" value="false" />
-      <option name="withSudo" value="false" />
-      <option name="buildTarget" value="REMOTE" />
-      <option name="backtrace" value="SHORT" />
-      <envs />
-      <option name="isRedirectInput" value="false" />
-      <option name="redirectInputPath" value="" />
-      <method v="2">
-        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="Run GPU Release" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
-      <option name="command" value="run --bin gpu_raytracing --release" />
-      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
-      <option name="emulateTerminal" value="false" />
-      <option name="channel" value="DEFAULT" />
-      <option name="requiredFeatures" value="true" />
-      <option name="allFeatures" value="false" />
-      <option name="withSudo" value="false" />
-      <option name="buildTarget" value="REMOTE" />
-      <option name="backtrace" value="SHORT" />
-      <envs />
-      <option name="isRedirectInput" value="false" />
-      <option name="redirectInputPath" value="" />
-      <method v="2">
-        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="Run GPU" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
-      <option name="command" value="run --bin gpu_raytracing" />
+    <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command" nameIsGenerated="true">
+      <option name="command" value="run" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="emulateTerminal" value="false" />
       <option name="channel" value="DEFAULT" />
@@ -160,10 +126,8 @@
       </method>
     </configuration>
     <list>
-      <item itemvalue="Cargo.Run CPU" />
-      <item itemvalue="Cargo.Run CPU Release" />
-      <item itemvalue="Cargo.Run GPU" />
-      <item itemvalue="Cargo.Run GPU Release" />
+      <item itemvalue="Cargo.Run" />
+      <item itemvalue="Cargo.Run Release" />
     </list>
   </component>
   <component name="RustProjectSettings">
@@ -207,6 +171,7 @@
       <workItem from="1679482214156" duration="12550000" />
       <workItem from="1679566694970" duration="11122000" />
       <workItem from="1679755944573" duration="724000" />
+      <workItem from="1680945487181" duration="2558000" />
     </task>
     <servers />
   </component>

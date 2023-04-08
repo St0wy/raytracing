@@ -13,6 +13,7 @@ use human_time::ToHumanTimeString;
 use std::io::BufWriter;
 use std::path::Path;
 use std::{fs::File, time::Instant};
+use rand_xoshiro::rand_core::SeedableRng;
 
 use crate::renderer::render;
 use crate::scene::Scene;
@@ -22,7 +23,8 @@ const FILE_DEFAULT_PATH: &str = "out.png";
 pub fn run() {
     let start = Instant::now();
 
-    let scene = Scene::big_scene();
+    let mut rng = rand_xoshiro::Xoshiro256Plus::seed_from_u64(0);
+    let scene = Scene::perlin_and_earth(&mut rng);
     let pixels = render(&scene, IMAGE_WIDTH, IMAGE_HEIGHT);
 
     println!(

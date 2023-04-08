@@ -5,7 +5,7 @@ use raytracing::renderer::render;
 use raytracing::scene::Scene;
 
 fn bench_three_spheres(c: &mut Criterion) {
-    let scene = Scene::bench_three_sphere();
+    let scene = Scene::bench_three_spheres();
 
     c.bench_function("render three_spheres", |b| {
         b.iter(|| {

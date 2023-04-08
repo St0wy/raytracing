@@ -5,6 +5,8 @@
       <sourceFolder url="file://$MODULE_DIR$/cpu_raytracing/benches" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/cpu_raytracing/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/gpu_raytracing/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/benches" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />

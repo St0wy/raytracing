@@ -31,7 +31,7 @@ impl Scene {
         }
     }
 
-    pub fn bench_three_sphere() -> Self {
+    pub fn bench_three_spheres() -> Self {
         let mut world = HittableWorld::new();
 
         let material = Material::new_dielectric(1.5);
