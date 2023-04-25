@@ -12,7 +12,7 @@ rand_xoshiro = "0.6.0"
 rayon = "1.7.0"
 
 [dependencies.glam]
-version = "0.23.0"
+version = "0.24.0"
 features = ["fast-math", "core-simd"]
 
 [dependencies.tracy_full]
